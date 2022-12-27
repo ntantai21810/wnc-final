@@ -80,20 +80,19 @@ export const DashboardSidebar = (props: IDashboardNavBarProps) => {
           }}
         />
         <Box sx={{ flexGrow: 1 }}>
-          {auth.role !== "" &&
-            RBAC[auth.role].map((item) => {
-              if (isFullPageRole(item)) {
-                return (
-                  <NavItem
-                    key={item.url}
-                    icon={item.icon}
-                    href={item.url}
-                    title={item.label}
-                  />
-                );
-              }
-              return null;
-            })}
+          {RBAC[auth.role].map((item) => {
+            if (isFullPageRole(item)) {
+              return (
+                <NavItem
+                  key={item.url}
+                  icon={item.icon}
+                  href={item.url}
+                  title={item.label}
+                />
+              );
+            }
+            return null;
+          })}
         </Box>
       </Box>
     </>

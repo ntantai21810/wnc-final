@@ -1,17 +1,13 @@
-import * as z from 'zod';
-import { email, password } from './common';
+import * as z from "zod";
+import { email, password, username } from "./common";
 
 export interface ILoginFormData {
-  email: string;
+  username: string;
   password: string;
 }
 
-export interface ISignupFormData extends ILoginFormData {
-  confirmPassword: string;
-}
-
 export const loginSchema = z.object({
-  email,
+  username,
   password,
 });
 
@@ -22,6 +18,6 @@ export const signupSchema = z
     confirmPassword: z.string(),
   })
   .refine((data) => data.password === data.confirmPassword, {
-    message: 'Password does not match.',
-    path: ['confirmPassword'],
+    message: "Password does not match.",
+    path: ["confirmPassword"],
   });

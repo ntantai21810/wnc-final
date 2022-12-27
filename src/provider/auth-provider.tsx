@@ -19,7 +19,7 @@ export default function AuthProvider({ children }: IAuthProviderProps) {
 
   React.useEffect(() => {
     if (!isValidAccess && authState.status === "unauthenticate") {
-      navigate("/login");
+      navigate("/sign-in");
     }
   });
 

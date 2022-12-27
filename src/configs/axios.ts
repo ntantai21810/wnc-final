@@ -3,7 +3,8 @@ import { openNotification } from "../redux/notificationSlice";
 import { store } from "../redux/store";
 
 const axiosClient = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_BASE_URL || "http:/localhost:3000/",
+  baseURL: "https://bankmaia.herokuapp.com/api/" || "http:/localhost:3000/",
+  withCredentials: true,
 });
 
 // Add a request interceptor
@@ -38,7 +39,7 @@ axiosClient.interceptors.response.use(
     store.dispatch(
       openNotification({
         type: "error",
-        message: error.response?.data?.message || error.message || "",
+        message: error.response?.data?.Message || error.message || "",
       })
     );
     return Promise.reject(error);

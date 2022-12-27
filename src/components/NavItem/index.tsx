@@ -22,6 +22,9 @@ export const NavItem = (props: INavItemProps) => {
         mb: 0.5,
         py: 0,
         px: 2,
+        "& > *": {
+          width: "100%",
+        },
       }}
       {...others}
     >
@@ -47,7 +50,7 @@ export const NavItem = (props: INavItemProps) => {
             },
           }}
         >
-          <Box sx={{ flexGrow: 1 }} color="black">
+          <Box sx={{ flexGrow: 1 }} color="white">
             {title}
           </Box>
         </Button>

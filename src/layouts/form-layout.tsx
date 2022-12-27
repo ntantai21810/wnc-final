@@ -1,5 +1,5 @@
-import { Box, SxProps } from '@mui/material';
-import * as React from 'react';
+import { Box, SxProps } from "@mui/material";
+import * as React from "react";
 
 export interface IFormLayoutProps extends React.HTMLProps<HTMLFormElement> {
   children: React.ReactNode;
@@ -15,11 +15,11 @@ export default function FormLayout({
     <Box
       sx={{
         form: {
-          display: 'flex',
-          flexDirection: 'column',
+          display: "flex",
+          flexDirection: "column",
 
-          '& > *:not(:last-child)': {
-            marginBottom: 3,
+          "& > *:not(:last-child)": {
+            marginBottom: 4,
           },
         },
         ...sx,
