@@ -11,12 +11,12 @@ const axiosClient = axios.create({
 axiosClient.interceptors.request.use(
   function (config) {
     // Do something before request is sent
-    const authState = store.getState().auth;
-    const accessToken = authState.accessToken;
+    // const authState = store.getState().auth;
+    // const accessToken = authState.accessToken;
 
-    if (config.headers && accessToken) {
-      config.headers.Authorization = `Bearer ${accessToken}`;
-    }
+    // if (config.headers && accessToken) {
+    //   config.headers.Authorization = `Bearer ${accessToken}`;
+    // }
 
     return config;
   },

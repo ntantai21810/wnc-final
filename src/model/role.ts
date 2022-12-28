@@ -1,1 +1,1 @@
-export type TRole = "";
+export type TRole = "Admin" | "User" | "Employee" | "";

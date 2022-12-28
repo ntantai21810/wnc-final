@@ -1,23 +1,23 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { IAccount } from "../model/account";
 import { TRole } from "../model/role";
-import { IUser } from "../model/user";
 
-export interface IAuthState extends Omit<IUser, "role"> {
+export interface IAuthState extends IAccount {
   status: "authenticating" | "authenticated" | "unauthenticate";
-  accessToken: string;
-  role: TRole | "";
-  email?: string;
+  role: TRole;
 }
 
 export const initialState: IAuthState = {
   id: 0,
   status: "authenticating",
-  name: "",
-  role: "",
-  organization_id: 0,
-  user_id: "",
-  accessToken: "",
+  accountNumber: 0,
+  fullName: "",
+  balance: 0,
   email: "",
+  role: "",
+  isActive: true,
+  recipients: [],
+  bankAccountId: 0,
 };
 
 export const authSlice = createSlice({

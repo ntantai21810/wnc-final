@@ -7,11 +7,18 @@ import { ILoginFormData, loginSchema } from "../../schema/auth";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { axiosClient } from "../../configs/axios";
 import { useNavigate } from "react-router-dom";
+import { useAppDispatch } from "../../hooks/redux";
+import { logout, setAuth } from "../../redux/authSlice";
+import { useState } from "react";
+import { LoadingButton } from "@mui/lab";
 
 export interface ISigninPageProps {}
 
 export default function SigninPage(props: ISigninPageProps) {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  const [isLoading, setIsLoading] = useState(false);
+
   const form = useForm<ILoginFormData>({
     defaultValues: {
       username: "",
@@ -21,18 +28,25 @@ export default function SigninPage(props: ISigninPageProps) {
   });
 
   const _handleLogin = async (values: ILoginFormData) => {
+    setIsLoading(true);
     try {
-      const res = await axiosClient.post("/Auth/login", values);
+      await axiosClient.post("/Auth/login", values);
 
-      console.log(res);
-      // navigate("/", { replace: true });
+      const res = await axiosClient.get("/Account/me");
 
-      const a = await axiosClient.get("/Account");
+      dispatch(
+        setAuth({
+          ...res.data,
+          status: "authenticated",
+        })
+      );
 
-      console.log({ a });
+      navigate("/", { replace: true });
     } catch (e) {
+      dispatch(logout());
       console.log(e);
     }
+    setIsLoading(false);
   };
 
   return (
@@ -86,14 +100,23 @@ export default function SigninPage(props: ISigninPageProps) {
                 fullWidth
               />
 
-              <Button
+              {/* <Button
                 type="submit"
                 fullWidth
                 variant="contained"
                 sx={{ mt: 3, mb: 2 }}
               >
                 Sign In
-              </Button>
+              </Button> */}
+              <LoadingButton
+                loading={isLoading}
+                variant="contained"
+                disabled={isLoading}
+                type="submit"
+                sx={{ mt: 3, mb: 2 }}
+              >
+                Login
+              </LoadingButton>
             </FormLayout>
           </FormProvider>
         </Box>

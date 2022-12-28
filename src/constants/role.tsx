@@ -13,6 +13,18 @@ export const RBAC: Record<TRole | "", (IBasePageRole | IPageRole)[]> = {
       url: "/logout",
       discriminatedType: "base",
     },
+  ],
+  Admin: [],
+  Employee: [],
+  User: [
+    {
+      url: "/login",
+      discriminatedType: "base",
+    },
+    {
+      url: "/logout",
+      discriminatedType: "base",
+    },
     {
       url: "/",
       label: "Dashboard",
@@ -22,6 +34,22 @@ export const RBAC: Record<TRole | "", (IBasePageRole | IPageRole)[]> = {
     {
       url: "/accounts",
       label: "Accounts",
+      icon: <GroupIcon fontSize="small" />,
+      discriminatedType: "full",
+    },
+    {
+      url: "/info",
+      label: "Setting",
+      icon: <GroupIcon fontSize="small" />,
+      discriminatedType: "full",
+    },
+    {
+      url: "/recipient/:id",
+      discriminatedType: "base",
+    },
+    {
+      url: "/recipient",
+      label: "Recipients",
       icon: <GroupIcon fontSize="small" />,
       discriminatedType: "full",
     },
