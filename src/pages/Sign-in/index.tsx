@@ -1,16 +1,17 @@
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import { Avatar, Box, Button, Grid, Paper, Typography } from "@mui/material";
-import { FormProvider, useForm } from "react-hook-form";
-import FormInput from "../../components/Input/FormInput";
-import FormLayout from "../../layouts/form-layout";
-import { ILoginFormData, loginSchema } from "../../schema/auth";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { axiosClient } from "../../configs/axios";
-import { useNavigate } from "react-router-dom";
-import { useAppDispatch } from "../../hooks/redux";
-import { logout, setAuth } from "../../redux/authSlice";
-import { useState } from "react";
+import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { LoadingButton } from "@mui/lab";
+import { Avatar, Box, Grid, Paper, Typography } from "@mui/material";
+import { useRef, useState } from "react";
+import ReCAPTCHA from "react-google-recaptcha";
+import { FormProvider, useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
+import FormInput from "../../components/Input/FormInput";
+import { axiosClient } from "../../configs/axios";
+import { useAppDispatch } from "../../hooks/redux";
+import FormLayout from "../../layouts/form-layout";
+import { logout, setAuth } from "../../redux/authSlice";
+import { ILoginFormData, loginSchema } from "../../schema/auth";
 
 export interface ISigninPageProps {}
 
@@ -18,6 +19,7 @@ export default function SigninPage(props: ISigninPageProps) {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const [isLoading, setIsLoading] = useState(false);
+  const recaptchaRef = useRef<any>();
 
   const form = useForm<ILoginFormData>({
     defaultValues: {
@@ -29,6 +31,8 @@ export default function SigninPage(props: ISigninPageProps) {
 
   const _handleLogin = async (values: ILoginFormData) => {
     setIsLoading(true);
+    console.log(recaptchaRef.current.getValue());
+    return;
     try {
       await axiosClient.post("/Auth/login", values);
 
@@ -108,6 +112,10 @@ export default function SigninPage(props: ISigninPageProps) {
               >
                 Sign In
               </Button> */}
+              <ReCAPTCHA
+                ref={recaptchaRef}
+                sitekey="6Ld-ybQjAAAAAGLJplPYThGxCDr3YGSZaHBK1JO2"
+              />
               <LoadingButton
                 loading={isLoading}
                 variant="contained"
