@@ -14,17 +14,20 @@ import FormLayout from "../../layouts/form-layout";
 import {
   useAddRecipientMutation,
   useEditRecipientMutation,
+  useGetBankQuery,
   useGetRecipientQuery,
 } from "../../redux/apiSlice";
 import { openNotification } from "../../redux/notificationSlice";
 import { IRecipientFormData, recipientSchema } from "../../schema/recipient";
 import FormSwitch from "../../components/Switch";
 import { useEffect } from "react";
+import FormSelect from "../../components/Select/FormSelect";
 
 export interface IRecipientActionPageProps {}
 
 const RecipientActionPage = (props: IRecipientActionPageProps) => {
   const { data: recipients } = useGetRecipientQuery();
+  const { data: bankData } = useGetBankQuery();
   const [addRecipient, { isLoading: isAdding }] = useAddRecipientMutation();
   const [editRecipient, { isLoading: isUpdating }] = useEditRecipientMutation();
   const dispatch = useAppDispatch();
@@ -115,11 +118,18 @@ const RecipientActionPage = (props: IRecipientActionPageProps) => {
             <FormInput name="accountNumber" label="Account Number" />
             <FormInput name="suggestedName" label="Suggested Name" />
             <FormSwitch name="isSameBank" label="Same bank" />
-            <FormInput
-              sx={{ display: isSameBank ? "none" : "flex" }}
-              name="bankDestinationId"
-              label="Bank"
-            />
+            {!isSameBank && (
+              <FormSelect
+                name="bankDestinationId"
+                label="Bank"
+                options={
+                  bankData?.map((item) => ({
+                    label: item.name,
+                    value: item.id,
+                  })) || []
+                }
+              />
+            )}
           </FormLayout>
         </FormProvider>
       </Container>

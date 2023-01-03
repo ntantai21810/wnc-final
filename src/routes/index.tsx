@@ -6,6 +6,8 @@ import LogoutPage from "../pages/Logout";
 import RecipientPage from "../pages/Recipient";
 import RecipientActionPage from "../pages/Recipient/action";
 import SigninPage from "../pages/Sign-in";
+import TransactionPage from "../pages/Transaction";
+import TransactionActionPage from "../pages/Transaction/action";
 
 interface IRoute {
   label?: string;
@@ -43,6 +45,16 @@ const routes: IRoute[] = [
   {
     path: "/recipient/:id",
     element: <RecipientActionPage />,
+    layout: AdminLayout,
+  },
+  {
+    path: "/transaction",
+    element: <TransactionPage />,
+    layout: AdminLayout,
+  },
+  {
+    path: "/transaction/:id",
+    element: <TransactionActionPage />,
     layout: AdminLayout,
   },
 ];

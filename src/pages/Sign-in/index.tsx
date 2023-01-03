@@ -2,11 +2,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { LoadingButton } from "@mui/lab";
 import { Avatar, Box, Grid, Paper, Typography } from "@mui/material";
-import { useRef, useState } from "react";
-import ReCAPTCHA from "react-google-recaptcha";
+import { useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import FormInput from "../../components/Input/FormInput";
+import FormRecaptcha from "../../components/Input/FormRepcaptcha";
 import { axiosClient } from "../../configs/axios";
 import { useAppDispatch } from "../../hooks/redux";
 import FormLayout from "../../layouts/form-layout";
@@ -19,20 +19,19 @@ export default function SigninPage(props: ISigninPageProps) {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const [isLoading, setIsLoading] = useState(false);
-  const recaptchaRef = useRef<any>();
 
   const form = useForm<ILoginFormData>({
     defaultValues: {
       username: "",
       password: "",
+      recaptchaToken: "",
     },
     resolver: zodResolver(loginSchema),
   });
 
   const _handleLogin = async (values: ILoginFormData) => {
     setIsLoading(true);
-    console.log(recaptchaRef.current.getValue());
-    return;
+
     try {
       await axiosClient.post("/Auth/login", values);
 
@@ -104,18 +103,7 @@ export default function SigninPage(props: ISigninPageProps) {
                 fullWidth
               />
 
-              {/* <Button
-                type="submit"
-                fullWidth
-                variant="contained"
-                sx={{ mt: 3, mb: 2 }}
-              >
-                Sign In
-              </Button> */}
-              <ReCAPTCHA
-                ref={recaptchaRef}
-                sitekey="6Ld-ybQjAAAAAGLJplPYThGxCDr3YGSZaHBK1JO2"
-              />
+              <FormRecaptcha name="recaptchaToken" />
               <LoadingButton
                 loading={isLoading}
                 variant="contained"

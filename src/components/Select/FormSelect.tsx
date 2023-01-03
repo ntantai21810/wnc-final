@@ -5,9 +5,9 @@ import {
   InputLabel,
   MenuItem,
   Select,
-} from '@mui/material';
-import { ComponentProps, ReactNode } from 'react';
-import { Controller, useFormContext } from 'react-hook-form';
+} from "@mui/material";
+import { ComponentProps, ReactNode } from "react";
+import { Controller, useFormContext } from "react-hook-form";
 
 export type FormSelectProps = {
   name: string;
@@ -27,7 +27,7 @@ function FormSelect({
 }: FormSelectProps) {
   const { control, formState } = useFormContext();
 
-  const errMessage = formState.errors[name]?.['message'] as unknown as string;
+  const errMessage = formState.errors[name]?.["message"] as unknown as string;
 
   return (
     <Controller
@@ -39,15 +39,15 @@ function FormSelect({
           <Select
             value={field.value}
             label={label}
-            sx={{ backgroundColor: 'white' }}
+            sx={{ backgroundColor: "white" }}
             onChange={field.onChange}
             onBlur={field.onBlur}
             renderValue={(value) =>
               render ? (
                 render(value)
               ) : (
-                <Box textAlign={'start'}>
-                  {options.find((item) => item.value === value)?.label || ''}
+                <Box textAlign={"start"}>
+                  {options.find((item) => item.value === value)?.label || ""}
                 </Box>
               )
             }

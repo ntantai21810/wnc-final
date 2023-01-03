@@ -1,8 +1,11 @@
 // Need to use the React-specific entry point to allow generating React hooks
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { IAccount } from "../model/account";
+import { IBank } from "../model/bank";
 import { IRecipient } from "../model/recipient";
+import { ITransaction } from "../model/transaction";
 import { IRecipientFormData } from "../schema/recipient";
+import { ITransactionFormData } from "../schema/transaction";
 
 // Define a service using a base URL and expected endpoints
 export const appApi = createApi({
@@ -20,7 +23,7 @@ export const appApi = createApi({
     //   return headers;
     // },
   }),
-  tagTypes: ["Account", "Recipient"],
+  tagTypes: ["Account", "Recipient", "Bank", "Transaction"],
   endpoints: (builder) => ({
     // Account
     getAccounts: builder.query<IAccount[], void>({
@@ -70,6 +73,26 @@ export const appApi = createApi({
       }),
       invalidatesTags: ["Recipient"],
     }),
+
+    //Bank
+    getBank: builder.query<IBank[], void>({
+      query: () => `Bank`,
+      providesTags: ["Bank"],
+    }),
+
+    //Transaction
+    getTransaction: builder.query<ITransaction[], void>({
+      query: () => `Account/me/transactions`,
+      providesTags: ["Transaction"],
+    }),
+    addTransaction: builder.mutation<ITransaction, ITransactionFormData>({
+      query: (data) => ({
+        url: "Account/me/transfer-money",
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["Transaction"],
+    }),
   }),
 });
 
@@ -79,4 +102,7 @@ export const {
   useAddRecipientMutation,
   useEditRecipientMutation,
   useDeleteRecipientMutation,
+  useGetBankQuery,
+  useGetTransactionQuery,
+  useAddTransactionMutation,
 } = appApi;

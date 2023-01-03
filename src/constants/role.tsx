@@ -32,12 +32,6 @@ export const RBAC: Record<TRole | "", (IBasePageRole | IPageRole)[]> = {
       discriminatedType: "full",
     },
     {
-      url: "/accounts",
-      label: "Accounts",
-      icon: <GroupIcon fontSize="small" />,
-      discriminatedType: "full",
-    },
-    {
       url: "/info",
       label: "Setting",
       icon: <GroupIcon fontSize="small" />,
@@ -52,6 +46,16 @@ export const RBAC: Record<TRole | "", (IBasePageRole | IPageRole)[]> = {
       label: "Recipients",
       icon: <GroupIcon fontSize="small" />,
       discriminatedType: "full",
+    },
+    {
+      url: "/transaction",
+      label: "Transaction",
+      icon: <GroupIcon fontSize="small" />,
+      discriminatedType: "full",
+    },
+    {
+      url: "/transaction/:id",
+      discriminatedType: "base",
     },
   ],
 };
