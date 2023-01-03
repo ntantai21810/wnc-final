@@ -14,7 +14,22 @@ export const RBAC: Record<TRole | "", (IBasePageRole | IPageRole)[]> = {
       discriminatedType: "base",
     },
   ],
-  Admin: [],
+  Admin: [
+    {
+      url: "/login",
+      discriminatedType: "base",
+    },
+    {
+      url: "/logout",
+      discriminatedType: "base",
+    },
+    {
+      url: "/",
+      label: "Dashboard",
+      icon: <DashboardIcon fontSize="small" />,
+      discriminatedType: "full",
+    },
+  ],
   Employee: [],
   User: [
     {

@@ -82,7 +82,7 @@ const TransactionPage = (props: ITransactionPageProps) => {
 
   return (
     <ContentLayout
-      title="Settings"
+      title="Transaction page"
       isBack
       rightAction={
         <Button

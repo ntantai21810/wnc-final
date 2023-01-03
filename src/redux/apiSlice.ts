@@ -47,7 +47,7 @@ export const appApi = createApi({
       query: () => `Account/me/my-recipients`,
       providesTags: ["Recipient"],
     }),
-    addRecipient: builder.mutation<IRecipient, IRecipientFormData>({
+    addRecipient: builder.mutation<IRecipient, Partial<IRecipientFormData>>({
       query: (data) => ({
         url: "Account/me/add-my-recipient",
         method: "POST",
@@ -85,7 +85,10 @@ export const appApi = createApi({
       query: () => `Account/me/transactions`,
       providesTags: ["Transaction"],
     }),
-    addTransaction: builder.mutation<ITransaction, ITransactionFormData>({
+    addTransaction: builder.mutation<
+      ITransaction,
+      Partial<ITransactionFormData>
+    >({
       query: (data) => ({
         url: "Account/me/transfer-money",
         method: "POST",

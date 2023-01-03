@@ -6,36 +6,41 @@ import {
   DialogTitle,
   IconButton,
   Slide,
-} from '@mui/material';
-import CloseIcon from '@mui/icons-material/Close';
-import { TransitionProps } from '@mui/material/transitions';
-import * as React from 'react';
+} from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
+import { TransitionProps } from "@mui/material/transitions";
+import * as React from "react";
 
 const DIALOG_TYPE = {
   delete: {
-    title: 'Warning',
-    message: 'Are you sure you want to delete? This action cannot be undone.',
-    buttonText: 'Delete',
+    title: "Warning",
+    message: "Are you sure you want to delete? This action cannot be undone.",
+    buttonText: "Delete",
   },
   reset_password: {
-    title: 'Warning',
+    title: "Warning",
     message: `Are you sure you want to reset the user's password? It will be set to 12341234.`,
-    buttonText: 'Reset',
+    buttonText: "Reset",
   },
   deploy_contract: {
-    title: 'Confirm',
+    title: "Confirm",
     message: `Are you sure you want to deploy this contract?`,
-    buttonText: 'Deploy',
+    buttonText: "Deploy",
   },
   mint_token: {
-    title: 'Confirm',
+    title: "Confirm",
     message: `Are you sure you want to mint this token?`,
-    buttonText: 'Mint',
+    buttonText: "Mint",
   },
   cancel_request: {
-    title: 'Confirm',
+    title: "Confirm",
     message: `Are you sure you want to cancel this request?`,
-    buttonText: 'Cancel',
+    buttonText: "Cancel",
+  },
+  save_recipient: {
+    title: "Info",
+    message: `Do you want to save this account to recipient list?`,
+    buttonText: "Save",
   },
 };
 
@@ -46,6 +51,7 @@ export interface IDialogContainerProps {
   title?: string;
   onClose: () => void;
   onAction?: () => void;
+  onCancel?: () => void;
 }
 
 const Transition = React.forwardRef(function Transition(
@@ -58,12 +64,20 @@ const Transition = React.forwardRef(function Transition(
 });
 
 export default function DialogContainer(props: IDialogContainerProps) {
-  const { open, type = 'delete', children, title, onClose, onAction } = props;
+  const {
+    open,
+    type = "delete",
+    children,
+    title,
+    onClose,
+    onAction,
+    onCancel,
+  } = props;
 
   const _getButtonColor = (type: string) => {
-    if (type.startsWith('delete') || type.startsWith('cancel')) return 'error';
+    if (type.startsWith("delete") || type.startsWith("cancel")) return "error";
 
-    return 'info';
+    return "info";
   };
 
   return (
@@ -75,14 +89,14 @@ export default function DialogContainer(props: IDialogContainerProps) {
     >
       {children ? (
         <>
-          {title && onClose && (
+          {onClose && (
             <DialogTitle>
               {title}
               <IconButton
                 aria-label="close"
                 onClick={onClose}
                 sx={{
-                  position: 'absolute',
+                  position: "absolute",
                   right: 8,
                   top: 8,
                 }}
@@ -101,7 +115,7 @@ export default function DialogContainer(props: IDialogContainerProps) {
               aria-label="close"
               onClick={onClose}
               sx={{
-                position: 'absolute',
+                position: "absolute",
                 right: 8,
                 top: 8,
               }}
@@ -111,7 +125,7 @@ export default function DialogContainer(props: IDialogContainerProps) {
           </DialogTitle>
           <DialogContent>{DIALOG_TYPE[type].message}</DialogContent>
           <DialogActions>
-            <Button onClick={onClose}>Close</Button>
+            <Button onClick={onCancel || onClose}>Close</Button>
             <Button
               variant="contained"
               color={_getButtonColor(type)}

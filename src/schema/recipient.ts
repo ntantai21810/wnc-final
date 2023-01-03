@@ -2,7 +2,7 @@ import { z } from "zod";
 
 export interface IRecipientFormData {
   accountNumber: string;
-  suggestedName: string;
+  suggestedName: string | null;
   bankDestinationId: number | "" | null;
 
   //Handle on client

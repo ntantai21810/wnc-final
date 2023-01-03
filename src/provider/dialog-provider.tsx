@@ -1,7 +1,7 @@
-import * as React from 'react';
+import * as React from "react";
 import DialogContainer, {
   IDialogContainerProps,
-} from '../components/Dialog/DialogContainer';
+} from "../components/Dialog/DialogContainer";
 
 export interface IDialogProviderProps {
   children: React.ReactNode;
@@ -10,8 +10,8 @@ export interface IDialogProviderProps {
 export const DialogContext = React.createContext({
   createDialog: (
     _:
-      | Pick<IDialogContainerProps, 'onAction' | 'type'>
-      | Pick<IDialogContainerProps, 'children' | 'title'>
+      | Pick<IDialogContainerProps, "onAction" | "type" | "onCancel">
+      | Pick<IDialogContainerProps, "children" | "title">
   ) => {},
   closeDialog: () => {},
 });
@@ -21,8 +21,8 @@ export default function DialogProvider({ children }: IDialogProviderProps) {
 
   const createDialog = (
     option:
-      | Pick<IDialogContainerProps, 'onAction' | 'type'>
-      | Pick<IDialogContainerProps, 'children' | 'title'>
+      | Pick<IDialogContainerProps, "onAction" | "type">
+      | Pick<IDialogContainerProps, "children" | "title">
   ) => {
     const dialog = { ...option, onClose: closeDialog, open: true };
     setDialogs((dialogs) => [...dialogs, dialog]);
