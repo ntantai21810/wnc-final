@@ -17,6 +17,11 @@ const DIALOG_TYPE = {
     message: "Are you sure you want to delete? This action cannot be undone.",
     buttonText: "Delete",
   },
+  warning: {
+    title: "Warning",
+    message: "Are you sure you want to continue? This action cannot be undone.",
+    buttonText: "Confirm",
+  },
   reset_password: {
     title: "Warning",
     message: `Are you sure you want to reset the user's password? It will be set to 12341234.`,

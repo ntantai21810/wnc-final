@@ -72,5 +72,15 @@ export const RBAC: Record<TRole | "", (IBasePageRole | IPageRole)[]> = {
       url: "/transaction/:id",
       discriminatedType: "base",
     },
+    {
+      url: "/debit",
+      label: "Debit",
+      icon: <GroupIcon fontSize="small" />,
+      discriminatedType: "full",
+    },
+    {
+      url: "/debit/:id",
+      discriminatedType: "base",
+    },
   ],
 };

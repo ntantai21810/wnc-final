@@ -2,8 +2,10 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { IAccount } from "../model/account";
 import { IBank } from "../model/bank";
+import { IDebit } from "../model/debit";
 import { IRecipient } from "../model/recipient";
 import { ITransaction } from "../model/transaction";
+import { IDebitFormData, IDeleteDebitFormData } from "../schema/debit";
 import { IRecipientFormData } from "../schema/recipient";
 import { ITransactionFormData } from "../schema/transaction";
 
@@ -23,7 +25,7 @@ export const appApi = createApi({
     //   return headers;
     // },
   }),
-  tagTypes: ["Account", "Recipient", "Bank", "Transaction"],
+  tagTypes: ["Account", "Recipient", "Bank", "Transaction", "Debit"],
   endpoints: (builder) => ({
     // Account
     getAccounts: builder.query<IAccount[], void>({
@@ -96,6 +98,39 @@ export const appApi = createApi({
       }),
       invalidatesTags: ["Transaction"],
     }),
+
+    //Debit
+    getDebit: builder.query<IDebit[], void>({
+      query: () => `Account/me/debits`,
+      providesTags: ["Debit"],
+    }),
+    addDebit: builder.mutation<IDebit, IDebitFormData>({
+      query: (data) => ({
+        url: "Account/me/debits",
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["Debit"],
+    }),
+    deleteDebit: builder.mutation<
+      IDebit,
+      IDeleteDebitFormData & { id: number }
+    >({
+      query: ({ id, ...data }) => ({
+        url: `Account/me/debits/${id}`,
+        method: "DELETE",
+        body: data,
+      }),
+      invalidatesTags: ["Debit"],
+    }),
+    payDebit: builder.mutation<IDebit, { id: number }>({
+      query: ({ id }) => ({
+        url: `Account/me/debits/pay`,
+        method: "DELETE",
+        body: {},
+      }),
+      invalidatesTags: ["Debit"],
+    }),
   }),
 });
 
@@ -108,4 +143,8 @@ export const {
   useGetBankQuery,
   useGetTransactionQuery,
   useAddTransactionMutation,
+  useGetDebitQuery,
+  useAddDebitMutation,
+  useDeleteDebitMutation,
+  usePayDebitMutation,
 } = appApi;
