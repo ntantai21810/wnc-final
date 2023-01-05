@@ -13,13 +13,16 @@ import FormDateTimePicker from "../../components/DatePicker/FormDateTimePicker";
 import FormInput from "../../components/Input/FormInput";
 import { useAppDispatch } from "../../hooks/redux";
 import FormLayout from "../../layouts/form-layout";
-import { useAddDebitMutation } from "../../redux/apiSlice";
+import { useAddDebitMutation, useGetBankQuery } from "../../redux/apiSlice";
 import { openNotification } from "../../redux/notificationSlice";
 import { debitSchema, IDebitFormData } from "../../schema/debit";
+import FormSelect from "../../components/Select/FormSelect";
+import FormSwitch from "../../components/Switch";
 
 export interface IDebitActionPageProps {}
 
 const DebitActionPage = (props: IDebitActionPageProps) => {
+  const { data: banks } = useGetBankQuery();
   const [addDebit, { isLoading: isAdding }] = useAddDebitMutation();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -63,9 +66,18 @@ const DebitActionPage = (props: IDebitActionPageProps) => {
             id="recipient-form"
             onSubmit={form.handleSubmit(_handleSubmit)}
           >
+            <FormSelect
+              name="bankDestinationId"
+              label="Bank"
+              options={
+                banks?.map((item) => ({ label: item.name, value: item.id })) ||
+                []
+              }
+            />
             <FormInput name="accountNumber" label="Account Number" />
             <FormInput name="amount" label="Amount" />
             <FormInput name="description" label="Description" />
+            <FormSwitch name="selfInDebt" label="Self Debit" />
             <FormDateTimePicker name="dateDue" label="Date Due" />
 
             <LoadingButton

@@ -13,6 +13,10 @@ export const RBAC: Record<TRole | "", (IBasePageRole | IPageRole)[]> = {
       url: "/logout",
       discriminatedType: "base",
     },
+    {
+      url: "/forgot-password",
+      discriminatedType: "base",
+    },
   ],
   Admin: [
     {
@@ -38,6 +42,14 @@ export const RBAC: Record<TRole | "", (IBasePageRole | IPageRole)[]> = {
     },
     {
       url: "/logout",
+      discriminatedType: "base",
+    },
+    {
+      url: "/change-password",
+      discriminatedType: "base",
+    },
+    {
+      url: "/forgot-password",
       discriminatedType: "base",
     },
     {

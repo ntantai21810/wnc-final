@@ -9,6 +9,26 @@ import dayjs from "dayjs";
 import { ITransaction } from "../../model/transaction";
 import { useGetBankQuery, useGetTransactionQuery } from "../../redux/apiSlice";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+
+const FILTER_OPTS = [
+  {
+    label: "All",
+    value: "all",
+  },
+  {
+    label: "Transaction",
+    value: "Transaction",
+  },
+  {
+    label: "Receive",
+    value: "Receive",
+  },
+  {
+    label: "Debit",
+    value: "Debit",
+  },
+];
 
 export interface ITransactionPageProps {}
 
@@ -16,8 +36,17 @@ const TransactionPage = (props: ITransactionPageProps) => {
   const { data } = useGetTransactionQuery();
   const { data: bankData } = useGetBankQuery();
   const navigate = useNavigate();
+  const [type, setType] = useState("all");
 
   const columns: GridColDef<ITransaction>[] = [
+    {
+      field: "time",
+      headerName: "Time",
+      width: 200,
+      renderCell: (params) => (
+        <Typography>{dayjs(params.row.time).format("DD/MM/YYYY")}</Typography>
+      ),
+    },
     {
       field: "fromAccountNumber",
       headerName: "From Account Number",
@@ -70,14 +99,6 @@ const TransactionPage = (props: ITransactionPageProps) => {
       headerName: "Amount",
       width: 200,
     },
-    {
-      field: "time",
-      headerName: "Time",
-      width: 200,
-      renderCell: (params) => (
-        <Typography>{dayjs(params.row.time).format("DD/MM/YYYY")}</Typography>
-      ),
-    },
   ];
 
   return (
@@ -94,6 +115,24 @@ const TransactionPage = (props: ITransactionPageProps) => {
       }
     >
       <Box p={3}>
+        <Box
+          sx={{
+            "& > *:not(:last-child)": {
+              marginRight: 3,
+            },
+          }}
+          mb={3}
+        >
+          {FILTER_OPTS.map((item) => (
+            <Button
+              key={item.value}
+              variant={type === item.value ? "contained" : "outlined"}
+              onClick={() => setType(item.value)}
+            >
+              {item.label}
+            </Button>
+          ))}
+        </Box>
         <Box height={400} mt={3}>
           <DataGrid
             sx={{
@@ -101,13 +140,41 @@ const TransactionPage = (props: ITransactionPageProps) => {
               ".MuiDataGrid-columnHeaders": {
                 backgroundColor: "#eee",
               },
+
+              "& .row-transaction": {
+                bgcolor: "#d6d6ff",
+                cursor: "pointer",
+
+                "&:hover": {
+                  backgroundColor: "#eee",
+                },
+              },
+              "& .row-debit": {
+                bgcolor: "#ffc8c8",
+                cursor: "pointer",
+
+                "&:hover": {
+                  backgroundColor: "#eee",
+                },
+              },
+              "& .row-receive": {
+                bgcolor: "#b4f6b4",
+                cursor: "pointer",
+
+                "&:hover": {
+                  backgroundColor: "#eee",
+                },
+              },
             }}
-            rows={data || []}
+            rows={(data || []).filter((item) =>
+              type === "all" ? true : item.type === type
+            )}
             columns={columns}
             pageSize={10}
             rowsPerPageOptions={[10]}
             disableSelectionOnClick
             experimentalFeatures={{ newEditingApi: true }}
+            getRowClassName={(params) => `row-${params.row.type.toLowerCase()}`}
           />
         </Box>
       </Box>

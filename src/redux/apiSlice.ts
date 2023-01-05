@@ -123,11 +123,11 @@ export const appApi = createApi({
       }),
       invalidatesTags: ["Debit"],
     }),
-    payDebit: builder.mutation<IDebit, { id: number }>({
-      query: ({ id }) => ({
+    payDebit: builder.mutation<IDebit, { id: number; otp: string }>({
+      query: (data) => ({
         url: `Account/me/debits/pay`,
-        method: "DELETE",
-        body: {},
+        method: "POST",
+        body: data,
       }),
       invalidatesTags: ["Debit"],
     }),

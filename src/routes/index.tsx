@@ -1,8 +1,10 @@
 import { ReactNode } from "react";
 import AdminLayout from "../layouts/admin-layout";
-import InfoPage from "../pages/Account";
+import InfoPage from "../pages/Info";
+import ChangePasswordPage from "../pages/ChangePassword";
 import DebitPage from "../pages/Debit";
 import DebitActionPage from "../pages/Debit/action";
+import ForgotPasswordPage from "../pages/ForgotPassword";
 import Homepage from "../pages/Homepage";
 import LogoutPage from "../pages/Logout";
 import RecipientPage from "../pages/Recipient";
@@ -68,6 +70,18 @@ const routes: IRoute[] = [
     path: "/debit/:id",
     element: <DebitActionPage />,
     layout: AdminLayout,
+  },
+  {
+    path: "/change-password",
+    element: <ChangePasswordPage />,
+  },
+  {
+    path: "/forgot-password",
+    element: <ForgotPasswordPage />,
+  },
+  {
+    path: "/account",
+    element: <ForgotPasswordPage />,
   },
 ];
 

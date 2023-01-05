@@ -14,7 +14,7 @@ import FormRadioGroup from "../../components/Radio/FormRadioGroup";
 import FormSelect from "../../components/Select/FormSelect";
 import FormSwitch from "../../components/Switch";
 import { axiosClient } from "../../configs/axios";
-import { useAppDispatch } from "../../hooks/redux";
+import { useAppDispatch, useAppSelector } from "../../hooks/redux";
 import { useDialog } from "../../hooks/useDialog";
 import FormLayout from "../../layouts/form-layout";
 import {
@@ -28,6 +28,7 @@ import {
   ITransactionFormData,
   transactionSchema,
 } from "../../schema/transaction";
+import { updateAuth } from "../../redux/authSlice";
 
 export interface ITransactionActionPageProps {}
 
@@ -36,6 +37,7 @@ const TransactionActionPage = (props: ITransactionActionPageProps) => {
   const { data: bankData } = useGetBankQuery();
   const [step, setStep] = useState(0);
   const dialog = useDialog();
+  const auth = useAppSelector((state) => state.auth);
   const [addTransaction, { isLoading: isAdding }] = useAddTransactionMutation();
   const [addRecipient] = useAddRecipientMutation();
   const dispatch = useAppDispatch();
@@ -86,6 +88,8 @@ const TransactionActionPage = (props: ITransactionActionPageProps) => {
           message: "Make transaction successfully.",
         })
       );
+
+      dispatch(updateAuth({ balance: auth.balance - +values.amount }));
 
       dialog.createDialog({
         type: "save_recipient",

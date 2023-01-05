@@ -24,7 +24,9 @@ export const debitSchema = z.object({
     .refine((data) => !data || /^[0-9]*$/.test(data), "Number expected."),
   description: z.string().min(1, "This field is required."),
   dateDue: z.any().refine(Boolean, "This field is required."),
-  bankDestinationId: z.number().or(z.string()),
+  bankDestinationId: z
+    .number()
+    .or(z.string().min(1, "This field is required.")),
 });
 
 export interface IDeleteDebitFormData {
@@ -33,4 +35,12 @@ export interface IDeleteDebitFormData {
 
 export const deleteDebitSchema = z.object({
   description: z.string().min(1, "This field is required."),
+});
+
+export interface IPayDebitFormData {
+  otp: string;
+}
+
+export const payDebitSchema = z.object({
+  otp: z.string().min(1, "This field is required."),
 });

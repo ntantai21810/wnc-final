@@ -1,10 +1,10 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { LoadingButton } from "@mui/lab";
-import { Avatar, Box, Grid, Paper, Typography } from "@mui/material";
+import { Avatar, Box, Grid, Paper, Stack, Typography } from "@mui/material";
 import { useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import FormInput from "../../components/Input/FormInput";
 import FormRecaptcha from "../../components/Input/FormRepcaptcha";
 import { axiosClient } from "../../configs/axios";
@@ -115,6 +115,26 @@ export default function SigninPage(props: ISigninPageProps) {
               </LoadingButton>
             </FormLayout>
           </FormProvider>
+          <Stack
+            mt={2}
+            direction="row"
+            justifyContent="flex-end"
+            alignItems="center"
+            width="100%"
+          >
+            <Link to="/forgot-password">
+              <Typography
+                sx={{
+                  color: "blue",
+                  cursor: "pointer",
+                  textDecoration: "underline",
+                }}
+                fontSize="14px"
+              >
+                Forgot password?
+              </Typography>
+            </Link>
+          </Stack>
         </Box>
       </Grid>
     </Grid>
