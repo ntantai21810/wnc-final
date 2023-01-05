@@ -5,37 +5,44 @@ import { Box, Button, IconButton, Menu, MenuItem } from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import ContentLayout from "../../layouts/content-layout";
 //others
-import { IRecipient } from "../../model/recipient";
-import {
-  useDeleteRecipientMutation,
-  useGetRecipientQuery,
-} from "../../redux/apiSlice";
-import { Link, useNavigate } from "react-router-dom";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { useState } from "react";
-import { useDialog } from "../../hooks/useDialog";
+import { Link, useNavigate } from "react-router-dom";
+import ChargeMoneyForm from "../../components/pages/Account/ChargeMoneyForm";
 import { useAppDispatch } from "../../hooks/redux";
+import { useDialog } from "../../hooks/useDialog";
+import { IAccount } from "../../model/account";
+import { useGetAccountByEmployeeQuery } from "../../redux/apiSlice";
 import { openNotification } from "../../redux/notificationSlice";
 
 export interface IAccountPageProps {}
 
 const AccountPage = (props: IAccountPageProps) => {
-  const { data: recipients, isFetching } = useGetRecipientQuery();
-  const [deleteRecipient] = useDeleteRecipientMutation();
+  const { data: users, isFetching } = useGetAccountByEmployeeQuery();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const navigate = useNavigate();
   const dialog = useDialog();
   const dispatch = useAppDispatch();
 
-  const columns: GridColDef<IRecipient>[] = [
+  const columns: GridColDef<IAccount>[] = [
+    {
+      field: "fullName",
+      headerName: "Name",
+      width: 200,
+    },
     {
       field: "accountNumber",
       headerName: "Account Number",
       width: 200,
     },
     {
-      field: "suggestedName",
-      headerName: "Suggested Name",
+      field: "balance",
+      headerName: "Balance",
+      width: 200,
+    },
+    {
+      field: "email",
+      headerName: "Email",
       width: 200,
     },
     {
@@ -45,8 +52,9 @@ const AccountPage = (props: IAccountPageProps) => {
       renderCell: (params) => {
         const open = !!(
           anchorEl &&
-          document.getElementById(`action-${params.row.id}`) &&
-          anchorEl === document.getElementById(`action-${params.row.id}`)
+          document.getElementById(`action-${params.row.bankAccountId}`) &&
+          anchorEl ===
+            document.getElementById(`action-${params.row.bankAccountId}`)
         );
 
         return (
@@ -57,14 +65,14 @@ const AccountPage = (props: IAccountPageProps) => {
               aria-expanded={open ? "true" : undefined}
               aria-haspopup="true"
               onClick={handleClick}
-              id={`action-${params.row.id}`}
+              id={`action-${params.row.bankAccountId}`}
             >
               <MoreVertIcon />
             </IconButton>
             <Menu
               anchorEl={(e) => {
                 const anchorEl = document.getElementById(
-                  `action-${params.row.id}`
+                  `action-${params.row.bankAccountId}`
                 );
 
                 return anchorEl!;
@@ -77,19 +85,19 @@ const AccountPage = (props: IAccountPageProps) => {
             >
               <MenuItem
                 onClick={() => {
-                  navigate(`/recipient/${params.row.id}`);
+                  _handleAddMoney(params.row);
                   handleClose();
                 }}
               >
-                Edit
+                Add money to account
               </MenuItem>
               <MenuItem
                 onClick={() => {
-                  _handleDelete(params.row);
+                  navigate(`/account/${params.row.bankAccountId}/transaction`);
                   handleClose();
                 }}
               >
-                Delete
+                View transactions
               </MenuItem>
             </Menu>
           </Box>
@@ -104,34 +112,37 @@ const AccountPage = (props: IAccountPageProps) => {
   const handleClose = () => {
     setAnchorEl(null);
   };
-  const _handleDelete = (recipient: IRecipient) => {
-    dialog.createDialog({
-      type: "delete",
-      onAction: async () => {
-        try {
-          await deleteRecipient(recipient.id).unwrap();
+  const _handleAddMoney = async (user: IAccount) => {
+    try {
+      dialog.createDialog({
+        title: "Charge money to account",
+        children: (
+          <ChargeMoneyForm
+            account={user}
+            onDone={() => {
+              dispatch(
+                openNotification({
+                  type: "success",
+                  message: "Charge money successfully.",
+                })
+              );
 
-          dispatch(
-            openNotification({
-              type: "success",
-              message: "Delete successfully",
-            })
-          );
-        } catch (e: any) {
-          console.log(e);
-        } finally {
-          dialog.closeDialog();
-        }
-      },
-    });
+              dialog.closeDialog();
+            }}
+          />
+        ),
+      });
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   return (
     <ContentLayout
-      title="Recipients"
+      title="Account"
       isBack
       rightAction={
-        <Link to={`/recipient/add`}>
+        <Link to={`/account/add`}>
           <Button variant="contained">Add</Button>
         </Link>
       }
@@ -144,11 +155,12 @@ const AccountPage = (props: IAccountPageProps) => {
               backgroundColor: "#eee",
             },
           }}
-          rows={recipients || []}
+          rows={users || []}
           columns={columns}
           pageSize={10}
           loading={isFetching}
           rowsPerPageOptions={[10]}
+          getRowId={(row) => row.bankAccountId}
           disableSelectionOnClick
           experimentalFeatures={{ newEditingApi: true }}
         />

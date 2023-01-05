@@ -6,10 +6,13 @@ import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import ContentLayout from "../../layouts/content-layout";
 //others
 import dayjs from "dayjs";
-import { ITransaction } from "../../model/transaction";
-import { useGetBankQuery, useGetTransactionQuery } from "../../redux/apiSlice";
-import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { ITransaction } from "../../model/transaction";
+import {
+  useGetBankQuery,
+  useGetTransactionByUserQuery,
+} from "../../redux/apiSlice";
 
 const FILTER_OPTS = [
   {
@@ -30,10 +33,12 @@ const FILTER_OPTS = [
   },
 ];
 
-export interface ITransactionPageProps {}
+export interface IAccountTransactionPageProps {}
 
-const TransactionPage = (props: ITransactionPageProps) => {
-  const { data, isFetching } = useGetTransactionQuery();
+const AccountTransactionPage = (props: IAccountTransactionPageProps) => {
+  const params = useParams();
+  const id = +(params.id || "0");
+  const { data, isFetching } = useGetTransactionByUserQuery(id);
   const { data: bankData } = useGetBankQuery();
   const navigate = useNavigate();
   const [type, setType] = useState("all");
@@ -171,9 +176,9 @@ const TransactionPage = (props: ITransactionPageProps) => {
             )}
             columns={columns}
             pageSize={10}
+            loading={isFetching}
             rowsPerPageOptions={[10]}
             disableSelectionOnClick
-            loading={isFetching}
             experimentalFeatures={{ newEditingApi: true }}
             getRowClassName={(params) => `row-${params.row.type.toLowerCase()}`}
           />
@@ -183,6 +188,6 @@ const TransactionPage = (props: ITransactionPageProps) => {
   );
 };
 
-TransactionPage.getLayout = AdminLayout;
+AccountTransactionPage.getLayout = AdminLayout;
 
-export default TransactionPage;
+export default AccountTransactionPage;

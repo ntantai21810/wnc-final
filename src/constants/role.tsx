@@ -34,7 +34,44 @@ export const RBAC: Record<TRole | "", (IBasePageRole | IPageRole)[]> = {
       discriminatedType: "full",
     },
   ],
-  Employee: [],
+  Employee: [
+    {
+      url: "/login",
+      discriminatedType: "base",
+    },
+    {
+      url: "/logout",
+      discriminatedType: "base",
+    },
+    {
+      url: "/change-password",
+      discriminatedType: "base",
+    },
+    {
+      url: "/forgot-password",
+      discriminatedType: "base",
+    },
+    {
+      url: "/",
+      label: "Dashboard",
+      icon: <DashboardIcon fontSize="small" />,
+      discriminatedType: "full",
+    },
+    {
+      url: "/account",
+      label: "Account",
+      icon: <DashboardIcon fontSize="small" />,
+      discriminatedType: "full",
+    },
+    {
+      url: "/account/:id",
+      discriminatedType: "base",
+    },
+    {
+      url: "/account/:id/transaction",
+      discriminatedType: "base",
+    },
+  ],
   User: [
     {
       url: "/login",

@@ -12,6 +12,9 @@ import RecipientActionPage from "../pages/Recipient/action";
 import SigninPage from "../pages/Sign-in";
 import TransactionPage from "../pages/Transaction";
 import TransactionActionPage from "../pages/Transaction/action";
+import AccountPage from "../pages/Account";
+import AccountActionPage from "../pages/Account/action";
+import AccountTransactionPage from "../pages/Account/transaction";
 
 interface IRoute {
   label?: string;
@@ -81,7 +84,18 @@ const routes: IRoute[] = [
   },
   {
     path: "/account",
-    element: <ForgotPasswordPage />,
+    element: <AccountPage />,
+    layout: AdminLayout,
+  },
+  {
+    path: "/account/:id",
+    element: <AccountActionPage />,
+    layout: AdminLayout,
+  },
+  {
+    path: "/account/:id/transaction",
+    element: <AccountTransactionPage />,
+    layout: AdminLayout,
   },
 ];
 

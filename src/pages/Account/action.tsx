@@ -6,102 +6,58 @@ import ContentLayout from "../../layouts/content-layout";
 //others
 import { zodResolver } from "@hookform/resolvers/zod";
 import { LoadingButton } from "@mui/lab";
-import { FormProvider, useForm, useWatch } from "react-hook-form";
-import { useNavigate, useParams } from "react-router-dom";
+import { FormProvider, useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 import FormInput from "../../components/Input/FormInput";
 import { useAppDispatch } from "../../hooks/redux";
 import FormLayout from "../../layouts/form-layout";
-import {
-  useAddRecipientMutation,
-  useEditRecipientMutation,
-  useGetBankQuery,
-  useGetRecipientQuery,
-} from "../../redux/apiSlice";
+import { useAddAccountMutation } from "../../redux/apiSlice";
 import { openNotification } from "../../redux/notificationSlice";
-import { IRecipientFormData, recipientSchema } from "../../schema/recipient";
-import FormSwitch from "../../components/Switch";
-import { useEffect } from "react";
-import FormSelect from "../../components/Select/FormSelect";
+import { accountSchema, IAccountFormData } from "../../schema/account";
 
-export interface IRecipientActionPageProps {}
+export interface IAccountActionPageProps {}
 
-const RecipientActionPage = (props: IRecipientActionPageProps) => {
-  const { data: recipients } = useGetRecipientQuery();
-  const { data: bankData } = useGetBankQuery();
-  const [addRecipient, { isLoading: isAdding }] = useAddRecipientMutation();
-  const [editRecipient, { isLoading: isUpdating }] = useEditRecipientMutation();
+const AccountActionPage = (props: IAccountActionPageProps) => {
+  const [addAccount, { isLoading: isAdding }] = useAddAccountMutation();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const form = useForm<IRecipientFormData>({
+  const form = useForm<IAccountFormData>({
     defaultValues: {
-      accountNumber: "",
-      suggestedName: "",
-      bankDestinationId: "",
-
-      //Handle on client
-      isSameBank: true,
+      username: "",
+      firstName: "",
+      lastName: "",
+      email: "",
+      phone: "",
+      address: "",
+      indentityNumber: "",
+      balance: "",
     },
-    resolver: zodResolver(recipientSchema),
+    resolver: zodResolver(accountSchema),
   });
-  const params = useParams();
-  const id = params.id;
 
-  const isSameBank = useWatch({ name: "isSameBank", control: form.control });
-
-  const _handleSubmit = async (values: IRecipientFormData) => {
+  const _handleSubmit = async (values: IAccountFormData) => {
     try {
-      if (id === "add") {
-        await addRecipient({
-          ...values,
-          bankDestinationId: values.bankDestinationId || null,
-        }).unwrap();
+      await addAccount({ ...values, balance: +values.balance }).unwrap();
 
-        dispatch(
-          openNotification({ type: "success", message: "Add successfully." })
-        );
-      } else {
-        await editRecipient({
-          ...values,
-          bankDestinationId: values.bankDestinationId || null,
-          id: +(id as string),
-        }).unwrap();
+      dispatch(
+        openNotification({ type: "success", message: "Add successfully." })
+      );
 
-        dispatch(
-          openNotification({ type: "success", message: "Edit successfully." })
-        );
-      }
-
-      navigate("/recipient");
+      navigate("/account");
     } catch (e) {
       console.log(e);
     }
   };
 
-  useEffect(() => {
-    const editItem = recipients?.find((item) => item.id === +(id as string));
-
-    if (editItem) {
-      form.setValue("accountNumber", editItem.accountNumber + "");
-      form.setValue("suggestedName", editItem.suggestedName);
-
-      if (editItem.bankDestinationId) {
-        form.setValue("isSameBank", false);
-        form.setValue("bankDestinationId", editItem.bankDestinationId);
-      } else {
-        form.setValue("isSameBank", true);
-      }
-    }
-  }, [form, id, recipients]);
-
   return (
     <ContentLayout
-      title={id === "add" ? "Add recipient" : "Update recipient"}
+      title={"Add user"}
       isBack
       rightAction={
         <LoadingButton
-          loading={isAdding || isUpdating}
+          loading={isAdding}
           variant="contained"
-          disabled={isAdding || isUpdating}
+          disabled={isAdding}
           form="recipient-form"
           type="submit"
         >
@@ -115,21 +71,14 @@ const RecipientActionPage = (props: IRecipientActionPageProps) => {
             id="recipient-form"
             onSubmit={form.handleSubmit(_handleSubmit)}
           >
-            <FormInput name="accountNumber" label="Account Number" />
-            <FormInput name="suggestedName" label="Suggested Name" />
-            <FormSwitch name="isSameBank" label="Same bank" />
-            {!isSameBank && (
-              <FormSelect
-                name="bankDestinationId"
-                label="Bank"
-                options={
-                  bankData?.map((item) => ({
-                    label: item.name,
-                    value: item.id,
-                  })) || []
-                }
-              />
-            )}
+            <FormInput name="username" label="User Name" />
+            <FormInput name="firstName" label="First Name" />
+            <FormInput name="lastName" label="Last Name" />
+            <FormInput name="email" label="Email" />
+            <FormInput name="phone" label="Phone" />
+            <FormInput name="address" label="Address" />
+            <FormInput name="indentityNumber" label="Identity Number" />
+            <FormInput name="balance" label="Balance" />
           </FormLayout>
         </FormProvider>
       </Container>
@@ -137,6 +86,6 @@ const RecipientActionPage = (props: IRecipientActionPageProps) => {
   );
 };
 
-RecipientActionPage.getLayout = AdminLayout;
+AccountActionPage.getLayout = AdminLayout;
 
-export default RecipientActionPage;
+export default AccountActionPage;

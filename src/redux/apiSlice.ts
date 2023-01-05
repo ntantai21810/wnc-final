@@ -5,6 +5,7 @@ import { IBank } from "../model/bank";
 import { IDebit } from "../model/debit";
 import { IRecipient } from "../model/recipient";
 import { ITransaction } from "../model/transaction";
+import { IAccountFormData, IChargeMoneyFormData } from "../schema/account";
 import { IDebitFormData, IDeleteDebitFormData } from "../schema/debit";
 import { IRecipientFormData } from "../schema/recipient";
 import { ITransactionFormData } from "../schema/transaction";
@@ -32,17 +33,26 @@ export const appApi = createApi({
       query: () => `Account`,
       providesTags: ["Account"],
     }),
-    // addUser: builder.mutation<
-    //   IUser & { password?: string },
-    //   IUserFormData & { url: string }
-    // >({
-    //   query: ({ url, ...user }) => ({
-    //     url,
-    //     method: "POST",
-    //     body: user,
-    //   }),
-    //   invalidatesTags: ["User"],
-    // }),
+    addAccount: builder.mutation<IAccount, IAccountFormData>({
+      query: (data) => ({
+        url: "/Employee/create-bank-account",
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["Account"],
+    }),
+    getAccountByEmployee: builder.query<IAccount[], void>({
+      query: () => `/Employee/user`,
+      providesTags: ["Account"],
+    }),
+    chargeMoneyToAccount: builder.mutation<IAccount, IChargeMoneyFormData>({
+      query: (data) => ({
+        url: "/Employee/charge-money-to-account",
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["Account"],
+    }),
 
     //Recipient
     getRecipient: builder.query<IRecipient[], void>({
@@ -85,6 +95,10 @@ export const appApi = createApi({
     //Transaction
     getTransaction: builder.query<ITransaction[], void>({
       query: () => `Account/me/transactions`,
+      providesTags: ["Transaction"],
+    }),
+    getTransactionByUser: builder.query<ITransaction[], number>({
+      query: (id) => `Employee/user/${id}/transactions`,
       providesTags: ["Transaction"],
     }),
     addTransaction: builder.mutation<
@@ -147,4 +161,8 @@ export const {
   useAddDebitMutation,
   useDeleteDebitMutation,
   usePayDebitMutation,
+  useGetAccountByEmployeeQuery,
+  useAddAccountMutation,
+  useGetTransactionByUserQuery,
+  useChargeMoneyToAccountMutation,
 } = appApi;
