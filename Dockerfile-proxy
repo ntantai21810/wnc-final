@@ -1,6 +1,5 @@
 # ReactJS
 FROM nginx AS build
-WORKDIR /etc/nginx
-COPY ./.nginx/nginx.conf .
+COPY ./.nginx/nginx.conf /etc/nginx/nginx.conf
 EXPOSE 80 443
 ENTRYPOINT ["nginx", "-g", "daemon off;"]
