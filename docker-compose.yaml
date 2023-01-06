@@ -1,0 +1,16 @@
+version: "3"
+services:
+  wnc-fe:
+    build: .
+    volumes:
+      - .:/usr/app/src
+    image: ntantai21810/wnc
+  nginx:
+    image: ntantai21810/proxy
+    build:
+      dockerfile: Dockerfile-proxy
+    ports:
+      - 80:80
+      - 443:443
+    depends_on:
+      - wnc-fe
