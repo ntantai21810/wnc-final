@@ -1,5 +1,5 @@
 # ReactJS
-FROM node AS build
+FROM node:alpine AS build
 WORKDIR /usr/app/src
 COPY . .
 RUN yarn
