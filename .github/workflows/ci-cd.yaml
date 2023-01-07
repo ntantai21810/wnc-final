@@ -48,4 +48,4 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
           script: |
-            rm -rf deploy.sh && wget https://raw.githubusercontent.com/ntantai21810/demo-github-actions/master/deploy.sh && echo ${{ secrets.SU_PASSWORD }} | sudo -S bash deploy.sh
+            rm -rf deploy.sh && wget https://raw.githubusercontent.com/ntantai21810/wnc-final/master/deploy.sh && echo ${{ secrets.SU_PASSWORD }} | sudo -S bash deploy.sh
