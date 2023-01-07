@@ -15,6 +15,8 @@ import TransactionActionPage from "../pages/Transaction/action";
 import AccountPage from "../pages/Account";
 import AccountActionPage from "../pages/Account/action";
 import AccountTransactionPage from "../pages/Account/transaction";
+import StaffPage from "../pages/Staff";
+import StaffActionPage from "../pages/Staff/action";
 
 interface IRoute {
   label?: string;
@@ -95,6 +97,16 @@ const routes: IRoute[] = [
   {
     path: "/account/:id/transaction",
     element: <AccountTransactionPage />,
+    layout: AdminLayout,
+  },
+  {
+    path: "/staff",
+    element: <StaffPage />,
+    layout: AdminLayout,
+  },
+  {
+    path: "/staff/:id",
+    element: <StaffActionPage />,
     layout: AdminLayout,
   },
 ];

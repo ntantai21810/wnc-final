@@ -1,3 +1,4 @@
+import { IStaff } from "./../model/staff";
 // Need to use the React-specific entry point to allow generating React hooks
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { IAccount } from "../model/account";
@@ -9,6 +10,7 @@ import { IAccountFormData, IChargeMoneyFormData } from "../schema/account";
 import { IDebitFormData, IDeleteDebitFormData } from "../schema/debit";
 import { IRecipientFormData } from "../schema/recipient";
 import { ITransactionFormData } from "../schema/transaction";
+import { IStaffFormData } from "../schema/staff";
 
 // Define a service using a base URL and expected endpoints
 export const appApi = createApi({
@@ -26,7 +28,7 @@ export const appApi = createApi({
     //   return headers;
     // },
   }),
-  tagTypes: ["Account", "Recipient", "Bank", "Transaction", "Debit"],
+  tagTypes: ["Account", "Recipient", "Bank", "Transaction", "Debit", "Staff"],
   endpoints: (builder) => ({
     // Account
     getAccounts: builder.query<IAccount[], void>({
@@ -145,6 +147,35 @@ export const appApi = createApi({
       }),
       invalidatesTags: ["Debit"],
     }),
+
+    //Employee
+    getStaff: builder.query<IStaff[], void>({
+      query: () => `Admin/employee`,
+      providesTags: ["Staff"],
+    }),
+    addStaff: builder.mutation<IStaff, Partial<IStaffFormData>>({
+      query: (data) => ({
+        url: "Admin/create-employee-account",
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["Recipient"],
+    }),
+    editStaff: builder.mutation<IStaff, IStaffFormData & { id: number }>({
+      query: (data) => ({
+        url: "Account/me/edit-my-recipient",
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["Recipient"],
+    }),
+    deleteStaff: builder.mutation<IRecipient, number>({
+      query: (id) => ({
+        url: `Account/me/my-recipients/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Recipient"],
+    }),
   }),
 });
 
@@ -165,4 +196,8 @@ export const {
   useAddAccountMutation,
   useGetTransactionByUserQuery,
   useChargeMoneyToAccountMutation,
+  useGetStaffQuery,
+  useAddStaffMutation,
+  useEditStaffMutation,
+  useDeleteStaffMutation,
 } = appApi;

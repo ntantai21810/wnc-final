@@ -1,14 +1,20 @@
 //layouts
 import AdminLayout from "../../layouts/admin-layout";
 //types
-import { Container, Stack } from "@mui/material";
+import {
+  Box,
+  CircularProgress,
+  Container,
+  Stack,
+  Typography,
+} from "@mui/material";
 import ContentLayout from "../../layouts/content-layout";
 //others
 import { zodResolver } from "@hookform/resolvers/zod";
 import { LoadingButton } from "@mui/lab";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FormProvider, useForm, useWatch } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import FormInput from "../../components/Input/FormInput";
 import FormRadioGroup from "../../components/Radio/FormRadioGroup";
 import FormSelect from "../../components/Select/FormSelect";
@@ -43,6 +49,14 @@ const TransactionActionPage = (props: ITransactionActionPageProps) => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const [isSendingOTP, setIsSendingOTP] = useState(false);
+  const [isSearching, setIsSearching] = useState(false);
+  const params = useParams();
+  const id = params.id;
+  const [searchResult, setSearchResult] = useState<{
+    bankAccountId: number;
+    accountNumber: string;
+    fullName: string;
+  }>();
   const form = useForm<ITransactionFormData>({
     defaultValues: {
       toAccountNumber: "",
@@ -62,6 +76,14 @@ const TransactionActionPage = (props: ITransactionActionPageProps) => {
 
   const selecetFromList = useWatch({
     name: "selectFromList",
+    control: form.control,
+  });
+  const toAccountNumber = useWatch({
+    name: "toAccountNumber",
+    control: form.control,
+  });
+  const bankId = useWatch({
+    name: "bankId",
     control: form.control,
   });
 
@@ -91,39 +113,49 @@ const TransactionActionPage = (props: ITransactionActionPageProps) => {
 
       dispatch(updateAuth({ balance: auth.balance - +values.amount }));
 
-      dialog.createDialog({
-        type: "save_recipient",
-        onAction: async () => {
-          try {
-            await addRecipient({
-              accountNumber: values.selectFromList
-                ? (recipients?.find((item) => item.id === values.recipientId)
-                    ?.accountNumber || "") + ""
-                : values.toAccountNumber + "",
-              suggestedName: null,
-              bankDestinationId: values.selectFromList
-                ? recipients?.find((item) => item.id === values.recipientId)
-                    ?.bankDestinationId || 0
-                : values.bankId,
-            }).unwrap();
-
-            dispatch(
-              openNotification({
-                type: "success",
-                message: "Save recipient successfully.",
-              })
+      if (
+        !recipients?.find((item) => {
+          if (values.bankId) {
+            return (
+              values.bankId === item.bankDestinationId &&
+              values.toAccountNumber === item.accountNumber
             );
-          } catch (e) {
-            console.log(e);
-          } finally {
-            dialog.closeDialog();
+          } else return values.toAccountNumber === item.accountNumber;
+        })
+      )
+        dialog.createDialog({
+          type: "save_recipient",
+          onAction: async () => {
+            try {
+              await addRecipient({
+                accountNumber: values.selectFromList
+                  ? (recipients?.find((item) => item.id === values.recipientId)
+                      ?.accountNumber || "") + ""
+                  : values.toAccountNumber + "",
+                suggestedName: null,
+                bankDestinationId: values.selectFromList
+                  ? recipients?.find((item) => item.id === values.recipientId)
+                      ?.bankDestinationId || 0
+                  : values.bankId,
+              }).unwrap();
+
+              dispatch(
+                openNotification({
+                  type: "success",
+                  message: "Save recipient successfully.",
+                })
+              );
+            } catch (e) {
+              console.log(e);
+            } finally {
+              dialog.closeDialog();
+              navigate("/transaction");
+            }
+          },
+          onCancel: () => {
             navigate("/transaction");
-          }
-        },
-        onCancel: () => {
-          navigate("/transaction");
-        },
-      });
+          },
+        });
     } catch (e) {
       console.log(e);
     }
@@ -145,6 +177,30 @@ const TransactionActionPage = (props: ITransactionActionPageProps) => {
       setIsSendingOTP(false);
     }
   };
+
+  useEffect(() => {
+    const _searchAccount = async () => {
+      if (toAccountNumber.toString().length === 6 && bankId) {
+        setIsSearching(true);
+        try {
+          const res = await axiosClient.post("/Account/me/searchAccount", {
+            accountNumber: toAccountNumber,
+            bankId: bankId,
+          });
+
+          setSearchResult(res.data);
+        } catch (e) {
+          setSearchResult(undefined);
+          console.log(e);
+        }
+      } else {
+        setSearchResult(undefined);
+      }
+      setIsSearching(false);
+    };
+
+    _searchAccount();
+  }, [bankId, toAccountNumber]);
 
   return (
     <ContentLayout title={"Transaction"} isBack>
@@ -192,6 +248,56 @@ const TransactionActionPage = (props: ITransactionActionPageProps) => {
                   <FormInput name="toAccountNumber" label="Account Number" />
                 </>
               )}
+              {id === "add" &&
+                toAccountNumber.toString().length === 6 &&
+                bankId && (
+                  <Box>
+                    {isSearching ? (
+                      <Box textAlign="center">
+                        <CircularProgress />
+                      </Box>
+                    ) : (
+                      <Box
+                        sx={{
+                          "& > *:not(:last-child)": {
+                            marginBottom: 2,
+                          },
+                        }}
+                      >
+                        <Stack
+                          direction="row"
+                          sx={{
+                            "& > *:not(:last-child)": {
+                              marginBottom: 2,
+                            },
+                          }}
+                        >
+                          <Typography sx={{ marginRight: 2 }}>
+                            Account number:{" "}
+                          </Typography>
+                          <Typography>
+                            {searchResult?.accountNumber || ""}
+                          </Typography>
+                        </Stack>
+                        <Stack
+                          direction="row"
+                          sx={{
+                            "& > *:not(:last-child)": {
+                              marginBottom: 2,
+                            },
+                          }}
+                        >
+                          <Typography sx={{ marginRight: 2 }}>
+                            Full Name:{" "}
+                          </Typography>
+                          <Typography>
+                            {searchResult?.fullName || ""}
+                          </Typography>
+                        </Stack>
+                      </Box>
+                    )}
+                  </Box>
+                )}
               <FormInput name="amount" label="Amount" />
               <FormInput name="description" label="Description" />
               <FormRadioGroup
