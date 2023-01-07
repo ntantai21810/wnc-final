@@ -34,7 +34,6 @@ function App() {
     hubConnectionBuilder.on(
       "SendNotificationToUser",
       (result: { id: number; description: string; time: string }) => {
-        console.log({ result });
         dispatch(openNotification({ message: result.description }));
       }
     );

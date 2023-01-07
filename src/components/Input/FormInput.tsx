@@ -1,5 +1,5 @@
-import { useFormContext } from 'react-hook-form';
-import { TextField } from '@mui/material';
+import { useFormContext } from "react-hook-form";
+import { TextField } from "@mui/material";
 
 export type FormInputProps = React.ComponentProps<typeof TextField> & {
   name: string;
@@ -8,7 +8,7 @@ export type FormInputProps = React.ComponentProps<typeof TextField> & {
 function FormInput(props: FormInputProps) {
   const { register, formState } = useFormContext();
 
-  const [baseName, ...nestedNames] = props.name.split('.');
+  const [baseName, ...nestedNames] = props.name.split(".");
 
   let error = formState.errors[baseName] as any;
 
@@ -23,8 +23,8 @@ function FormInput(props: FormInputProps) {
   return (
     <TextField
       error={!!errMessage}
-      helperText={errMessage || ''}
-      sx={{ backgroundColor: 'white' }}
+      helperText={errMessage || ""}
+      sx={{ backgroundColor: "white" }}
       {...props}
       {...register(props.name)}
     />
