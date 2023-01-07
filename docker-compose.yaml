@@ -6,10 +6,10 @@ services:
       - .:/usr/app/src
     image: ntantai21810/wnc
   nginx:
-    image: ntantai21810/proxy
     build:
       context: .
       dockerfile: Dockerfile-proxy
+    image: ntantai21810/proxy
     ports:
       - 80:80
       - 443:443
