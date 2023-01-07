@@ -8,9 +8,11 @@ services:
   nginx:
     image: ntantai21810/proxy
     build:
+      context: .
       dockerfile: Dockerfile-proxy
     ports:
       - 80:80
       - 443:443
     depends_on:
       - wnc-fe
+    restart: always
