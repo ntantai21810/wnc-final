@@ -159,22 +159,22 @@ export const appApi = createApi({
         method: "POST",
         body: data,
       }),
-      invalidatesTags: ["Recipient"],
+      invalidatesTags: ["Staff"],
     }),
     editStaff: builder.mutation<IStaff, IStaffFormData & { id: number }>({
       query: (data) => ({
-        url: "Account/me/edit-my-recipient",
-        method: "POST",
+        url: "Admin/employee",
+        method: "PUT",
         body: data,
       }),
-      invalidatesTags: ["Recipient"],
+      invalidatesTags: ["Staff"],
     }),
     deleteStaff: builder.mutation<IRecipient, number>({
       query: (id) => ({
-        url: `Account/me/my-recipients/${id}`,
+        url: `Admin/employee/${id}`,
         method: "DELETE",
       }),
-      invalidatesTags: ["Recipient"],
+      invalidatesTags: ["Staff"],
     }),
   }),
 });

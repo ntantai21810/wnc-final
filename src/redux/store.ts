@@ -1,5 +1,5 @@
-import { combineReducers, configureStore } from '@reduxjs/toolkit';
-import { authReducer } from './authSlice';
+import { combineReducers, configureStore } from "@reduxjs/toolkit";
+import { authReducer } from "./authSlice";
 import {
   persistStore,
   persistReducer,
@@ -9,17 +9,17 @@ import {
   PERSIST,
   PURGE,
   REGISTER,
-} from 'redux-persist';
-import storageSession from 'redux-persist/lib/storage/session';
-import { notificationReducer } from './notificationSlice';
-import { appApi } from './apiSlice';
-import { setupListeners } from '@reduxjs/toolkit/query';
-import { rtkQueryErrorLogger } from './middlewares';
+} from "redux-persist";
+import storageSession from "redux-persist/lib/storage/session";
+import { notificationReducer } from "./notificationSlice";
+import { appApi } from "./apiSlice";
+import { setupListeners } from "@reduxjs/toolkit/query";
+import { rtkQueryErrorLogger } from "./middlewares";
 
 const persistConfig = {
-  key: 'root',
+  key: "root",
   storage: storageSession,
-  whitelist: ['auth'],
+  whitelist: ["auth"],
 };
 
 const rootReducer = combineReducers({

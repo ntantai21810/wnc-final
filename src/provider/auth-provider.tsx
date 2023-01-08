@@ -1,8 +1,10 @@
+import axios from "axios";
 import * as React from "react";
 import { matchRoutes, useLocation, useNavigate } from "react-router-dom";
 import { axiosClient } from "../configs/axios";
 import { RBAC } from "../constants/role";
 import { useAppDispatch, useAppSelector } from "../hooks/redux";
+import { INotification } from "../model/notification";
 import { TRole } from "../model/role";
 import { logout, setAuth } from "../redux/authSlice";
 import routes from "../routes/index";
@@ -25,11 +27,25 @@ export default function AuthProvider({ children }: IAuthProviderProps) {
   React.useEffect(() => {
     const _getMe = async () => {
       try {
-        const res = await axiosClient.get("/Account/me");
+        let notifications: INotification[] = [];
+        const res = await axios.get(
+          "https://bankmaia.herokuapp.com/api/Account/me",
+          { withCredentials: true }
+        );
+
+        if (res.data.role !== "Admin")
+          try {
+            const resNoti = await axiosClient.get("/Account/me/notifications");
+
+            notifications = resNoti.data;
+          } catch (e) {
+            console.log(e);
+          }
 
         dispatch(
           setAuth({
             ...res.data,
+            notification: notifications,
             status: "authenticated",
           })
         );

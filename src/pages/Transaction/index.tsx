@@ -133,7 +133,7 @@ const TransactionPage = (props: ITransactionPageProps) => {
             </Button>
           ))}
         </Box>
-        <Box height={400} mt={3}>
+        <Box height={700} mt={3}>
           <DataGrid
             sx={{
               backgroundColor: "#fff",

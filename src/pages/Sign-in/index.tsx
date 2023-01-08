@@ -10,6 +10,7 @@ import FormRecaptcha from "../../components/Input/FormRepcaptcha";
 import { axiosClient } from "../../configs/axios";
 import { useAppDispatch } from "../../hooks/redux";
 import FormLayout from "../../layouts/form-layout";
+import { INotification } from "../../model/notification";
 import { logout, setAuth } from "../../redux/authSlice";
 import { ILoginFormData, loginSchema } from "../../schema/auth";
 
@@ -34,12 +35,22 @@ export default function SigninPage(props: ISigninPageProps) {
 
     try {
       await axiosClient.post("/Auth/login", values);
-
+      let notifications: INotification[] = [];
       const res = await axiosClient.get("/Account/me");
+
+      if (res.data.role !== "Admin")
+        try {
+          const resNoti = await axiosClient.get("/Account/me/notifications");
+
+          notifications = resNoti.data;
+        } catch (e) {
+          console.log(e);
+        }
 
       dispatch(
         setAuth({
           ...res.data,
+          notification: notifications,
           status: "authenticated",
         })
       );

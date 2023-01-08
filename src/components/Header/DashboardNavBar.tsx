@@ -12,12 +12,14 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
+import dayjs from "dayjs";
 //others
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import theme from "../../configs/theme";
 //constants
 import { POPOVER_ROUTES } from "../../constants/header";
+import { useAppSelector } from "../../hooks/redux";
 interface IDashboardNavBarProps {
   onSidebarOpen: () => void;
 }
@@ -25,6 +27,8 @@ interface IDashboardNavBarProps {
 export const DashboardNavbar = (props: IDashboardNavBarProps) => {
   const { onSidebarOpen, ...other } = props;
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
+  const notifications = useAppSelector((state) => state.auth.notification);
+  const navigate = useNavigate();
 
   const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElUser(event.currentTarget);
@@ -73,7 +77,11 @@ export const DashboardNavbar = (props: IDashboardNavBarProps) => {
         <Box sx={{ flexGrow: 1 }} />
         <Box sx={{ flexGrow: 0, ml: 2 }}>
           <Tooltip title="Open settings">
-            <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+            <IconButton
+              id="noti-icon"
+              onClick={handleOpenUserMenu}
+              sx={{ p: 0 }}
+            >
               <NotificationsIcon fontSize="small" />
             </IconButton>
           </Tooltip>
@@ -90,21 +98,57 @@ export const DashboardNavbar = (props: IDashboardNavBarProps) => {
               vertical: "top",
               horizontal: "right",
             }}
-            open={Boolean(anchorElUser)}
+            open={
+              !!anchorElUser &&
+              !!document.getElementById("noti-icon") &&
+              anchorElUser === document.getElementById("noti-icon")
+            }
             onClose={handleCloseUserMenu}
           >
-            {POPOVER_ROUTES.map((setting) => (
-              <MenuItem key={setting.to} onClick={handleCloseUserMenu}>
-                <Link to={setting.to}>
-                  <Typography textAlign="center">{setting.label}</Typography>
-                </Link>
-              </MenuItem>
-            ))}
+            <Box
+              sx={{
+                "& > *:not(:last-child)": {
+                  marginBottom: 2,
+                },
+                overflowY: "auto",
+              }}
+              maxHeight="400px"
+            >
+              {notifications.map((item) => (
+                <Box
+                  p={2}
+                  sx={{
+                    cursor: "pointer",
+                    transition: "all linear 0.25s",
+                    "&:hover": {
+                      backgroundColor: "#eee",
+                    },
+                  }}
+                  onClick={() => {
+                    setAnchorElUser(null);
+                    if (item.type === "Transaction") navigate("/transaction");
+                    if (item.type === "Debit") navigate("/debit");
+                    if (item.type === "Charge") navigate("/transaction");
+                  }}
+                >
+                  <Typography fontWeight="bold" sx={{ marginBottom: 1 }}>
+                    {item.description}
+                  </Typography>
+                  <Typography>
+                    {dayjs(item.time).format("DD/MM/YYYY")}
+                  </Typography>
+                </Box>
+              ))}
+            </Box>
           </Menu>
         </Box>
         <Box sx={{ flexGrow: 0, ml: 2 }}>
           <Tooltip title="Open settings">
-            <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+            <IconButton
+              id="user-icon"
+              onClick={handleOpenUserMenu}
+              sx={{ p: 0 }}
+            >
               <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
             </IconButton>
           </Tooltip>
@@ -121,7 +165,11 @@ export const DashboardNavbar = (props: IDashboardNavBarProps) => {
               vertical: "top",
               horizontal: "right",
             }}
-            open={Boolean(anchorElUser)}
+            open={
+              !!anchorElUser &&
+              !!document.getElementById("user-icon") &&
+              anchorElUser === document.getElementById("user-icon")
+            }
             onClose={handleCloseUserMenu}
           >
             {POPOVER_ROUTES.map((setting) => (

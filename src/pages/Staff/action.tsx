@@ -18,8 +18,7 @@ import {
   useGetStaffQuery,
 } from "../../redux/apiSlice";
 import { openNotification } from "../../redux/notificationSlice";
-import { recipientSchema } from "../../schema/recipient";
-import { IStaffFormData } from "../../schema/staff";
+import { IStaffFormData, staffSchema } from "../../schema/staff";
 
 export interface IStaffActionPageProps {}
 
@@ -40,7 +39,7 @@ const StaffActionPage = (props: IStaffActionPageProps) => {
       indentityNumber: "",
       balance: 0,
     },
-    resolver: zodResolver(recipientSchema),
+    resolver: zodResolver(staffSchema),
   });
   const params = useParams();
   const id = params.id;
@@ -64,12 +63,12 @@ const StaffActionPage = (props: IStaffActionPageProps) => {
         );
       }
 
-      navigate("/recipient");
+      navigate("/staff");
     } catch (e) {
       console.log(e);
     }
   };
-
+  console.log({ staffs });
   useEffect(() => {
     const editItem = staffs?.find((item) => item.id === +(id as string));
 
@@ -87,7 +86,7 @@ const StaffActionPage = (props: IStaffActionPageProps) => {
 
   return (
     <ContentLayout
-      title={id === "add" ? "Add recipient" : "Update recipient"}
+      title={id === "add" ? "Add staff" : "Update staff"}
       isBack
       rightAction={
         <LoadingButton

@@ -1,13 +1,18 @@
+import { HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
 import { useEffect } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import AuthProvider from "./provider/auth-provider";
-import routes from "./routes";
-import { HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
 import { useAppDispatch } from "./hooks/redux";
+import { INotification } from "./model/notification";
+import AuthProvider from "./provider/auth-provider";
+import { useGetDebitQuery, useGetTransactionQuery } from "./redux/apiSlice";
+import { addNotification } from "./redux/authSlice";
 import { openNotification } from "./redux/notificationSlice";
+import routes from "./routes";
 
 function App() {
   const dispatch = useAppDispatch();
+  const { refetch: refetchTransaction } = useGetTransactionQuery();
+  const { refetch: refetchDebit } = useGetDebitQuery();
 
   const router = createBrowserRouter(
     routes.map((item) => ({
@@ -33,11 +38,17 @@ function App() {
 
     hubConnectionBuilder.on(
       "SendNotificationToUser",
-      (result: { id: number; description: string; time: string }) => {
+      (result: INotification) => {
+        console.log(result);
         dispatch(openNotification({ message: result.description }));
+        dispatch(addNotification(result));
+
+        if (result.type === "Transaction" || result.type === "Charge")
+          refetchTransaction();
+        if (result.type === "Debit") refetchDebit();
       }
     );
-  }, [dispatch]);
+  }, [dispatch, refetchDebit, refetchTransaction]);
 
   return <RouterProvider router={router} />;
 }

@@ -1,3 +1,4 @@
+import { INotification } from "./../model/notification";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { IAccount } from "../model/account";
 import { TRole } from "../model/role";
@@ -5,6 +6,7 @@ import { TRole } from "../model/role";
 export interface IAuthState extends IAccount {
   status: "authenticating" | "authenticated" | "unauthenticate";
   role: TRole;
+  notification: INotification[];
 }
 
 export const initialState: IAuthState = {
@@ -18,6 +20,7 @@ export const initialState: IAuthState = {
   isActive: true,
   recipients: [],
   bankAccountId: 0,
+  notification: [],
 };
 
 export const authSlice = createSlice({
@@ -30,6 +33,9 @@ export const authSlice = createSlice({
     updateAuth: (state, action: PayloadAction<Partial<IAuthState>>) => {
       return { ...state, ...action.payload };
     },
+    addNotification: (state, action: PayloadAction<INotification>) => {
+      state.notification.push(action.payload);
+    },
     logout: (_) => {
       return {
         ...initialState,
@@ -41,4 +47,5 @@ export const authSlice = createSlice({
 
 export const authReducer = authSlice.reducer;
 
-export const { setAuth, logout, updateAuth } = authSlice.actions;
+export const { setAuth, logout, updateAuth, addNotification } =
+  authSlice.actions;

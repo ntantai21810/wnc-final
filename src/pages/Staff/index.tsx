@@ -11,17 +11,14 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAppDispatch } from "../../hooks/redux";
 import { useDialog } from "../../hooks/useDialog";
 import { IStaff } from "../../model/staff";
-import {
-  useDeleteRecipientMutation,
-  useGetStaffQuery,
-} from "../../redux/apiSlice";
+import { useDeleteStaffMutation, useGetStaffQuery } from "../../redux/apiSlice";
 import { openNotification } from "../../redux/notificationSlice";
 
 export interface IStaffPageProps {}
 
 const StaffPage = (props: IStaffPageProps) => {
   const { data: staffs, isFetching } = useGetStaffQuery();
-  const [deleteRecipient] = useDeleteRecipientMutation();
+  const [deleteStaff] = useDeleteStaffMutation();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const navigate = useNavigate();
   const dialog = useDialog();
@@ -34,8 +31,13 @@ const StaffPage = (props: IStaffPageProps) => {
       width: 100,
     },
     {
-      field: "fullName",
-      headerName: "Full Name",
+      field: "firstName",
+      headerName: "First Name",
+      width: 200,
+    },
+    {
+      field: "lastName",
+      headerName: "Last Name",
       width: 200,
     },
     {
@@ -92,7 +94,7 @@ const StaffPage = (props: IStaffPageProps) => {
             >
               <MenuItem
                 onClick={() => {
-                  navigate(`/recipient/${params.row.id}`);
+                  navigate(`/staff/${params.row.id}`);
                   handleClose();
                 }}
               >
@@ -124,7 +126,7 @@ const StaffPage = (props: IStaffPageProps) => {
       type: "delete",
       onAction: async () => {
         try {
-          await deleteRecipient(staff.id).unwrap();
+          await deleteStaff(staff.id).unwrap();
 
           dispatch(
             openNotification({
@@ -146,7 +148,7 @@ const StaffPage = (props: IStaffPageProps) => {
       title="Staffs"
       isBack
       rightAction={
-        <Link to={`/recipient/add`}>
+        <Link to={`/staff/add`}>
           <Button variant="contained">Add</Button>
         </Link>
       }
