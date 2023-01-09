@@ -2,10 +2,7 @@ version: "3"
 services:
   wnc-fe:
     build: .
-    volumes:
-      - .:/usr/app/src
     image: ntantai21810/wnc
-    restart: always
   nginx:
     build:
       context: .
@@ -14,6 +11,5 @@ services:
     ports:
       - 80:80
       - 443:443
-    restart: always
     depends_on:
       - wnc-fe
