@@ -24,6 +24,8 @@ export default function AuthProvider({ children }: IAuthProviderProps) {
     (item) => item.url === pathName
   );
 
+  console.log({ pathName });
+
   React.useEffect(() => {
     const _getMe = async () => {
       try {

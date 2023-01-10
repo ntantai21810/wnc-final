@@ -1,7 +1,11 @@
+import AtmIcon from "@mui/icons-material/Atm";
+import DashboardIcon from "@mui/icons-material/Dashboard";
+import PaidIcon from "@mui/icons-material/Paid";
+import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
+import RecentActorsIcon from "@mui/icons-material/RecentActors";
+import SettingsIcon from "@mui/icons-material/Settings";
 import { IBasePageRole, IPageRole } from "../model/page";
 import { TRole } from "../model/role";
-import DashboardIcon from "@mui/icons-material/Dashboard";
-import GroupIcon from "@mui/icons-material/Group";
 
 export const RBAC: Record<TRole | "", (IBasePageRole | IPageRole)[]> = {
   "": [
@@ -36,7 +40,7 @@ export const RBAC: Record<TRole | "", (IBasePageRole | IPageRole)[]> = {
     {
       url: "/staff",
       label: "Staff",
-      icon: <DashboardIcon fontSize="small" />,
+      icon: <PeopleAltIcon fontSize="small" />,
       discriminatedType: "full",
     },
     {
@@ -46,7 +50,7 @@ export const RBAC: Record<TRole | "", (IBasePageRole | IPageRole)[]> = {
     {
       url: "/list-transaction",
       label: "Transaction",
-      icon: <DashboardIcon fontSize="small" />,
+      icon: <PaidIcon fontSize="small" />,
       discriminatedType: "full",
     },
   ],
@@ -76,7 +80,7 @@ export const RBAC: Record<TRole | "", (IBasePageRole | IPageRole)[]> = {
     {
       url: "/account",
       label: "Account",
-      icon: <DashboardIcon fontSize="small" />,
+      icon: <PeopleAltIcon fontSize="small" />,
       discriminatedType: "full",
     },
     {
@@ -112,25 +116,19 @@ export const RBAC: Record<TRole | "", (IBasePageRole | IPageRole)[]> = {
       discriminatedType: "full",
     },
     {
-      url: "/info",
-      label: "Setting",
-      icon: <GroupIcon fontSize="small" />,
-      discriminatedType: "full",
-    },
-    {
       url: "/recipient/:id",
       discriminatedType: "base",
     },
     {
       url: "/recipient",
       label: "Recipients",
-      icon: <GroupIcon fontSize="small" />,
+      icon: <RecentActorsIcon fontSize="small" />,
       discriminatedType: "full",
     },
     {
       url: "/transaction",
       label: "Transaction",
-      icon: <GroupIcon fontSize="small" />,
+      icon: <PaidIcon fontSize="small" />,
       discriminatedType: "full",
     },
     {
@@ -140,12 +138,18 @@ export const RBAC: Record<TRole | "", (IBasePageRole | IPageRole)[]> = {
     {
       url: "/debit",
       label: "Debit",
-      icon: <GroupIcon fontSize="small" />,
+      icon: <AtmIcon fontSize="small" />,
       discriminatedType: "full",
     },
     {
       url: "/debit/:id",
       discriminatedType: "base",
+    },
+    {
+      url: "/info",
+      label: "Setting",
+      icon: <SettingsIcon fontSize="small" />,
+      discriminatedType: "full",
     },
   ],
 };

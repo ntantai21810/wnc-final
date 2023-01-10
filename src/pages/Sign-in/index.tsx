@@ -99,7 +99,7 @@ export default function SigninPage(props: ISigninPageProps) {
             variant="h5"
             sx={{ "& + div": { width: "100%", mt: 6 } }}
           >
-            Sign in Demo
+            Sign in
           </Typography>
           <FormProvider {...form}>
             <FormLayout
