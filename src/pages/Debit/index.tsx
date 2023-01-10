@@ -8,6 +8,7 @@ import {
   IconButton,
   Menu,
   MenuItem,
+  Stack,
   Typography,
 } from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
@@ -20,11 +21,13 @@ import { Link, useNavigate } from "react-router-dom";
 import DeleteDebitForm from "../../components/pages/Debit/DeleteDebitForm";
 import PayDebitForm from "../../components/pages/Debit/PayDebitForm";
 import { axiosClient } from "../../configs/axios";
-import { useAppDispatch } from "../../hooks/redux";
+import { useAppDispatch, useAppSelector } from "../../hooks/redux";
 import { useDialog } from "../../hooks/useDialog";
 import { IDebit } from "../../model/debit";
 import { useGetBankQuery, useGetDebitQuery } from "../../redux/apiSlice";
 import { openNotification } from "../../redux/notificationSlice";
+import { FormProvider, useForm, useWatch } from "react-hook-form";
+import FormSelect from "../../components/Select/FormSelect";
 
 const FILTER_OPTS = [
   {
@@ -44,6 +47,7 @@ const FILTER_OPTS = [
 export interface IDebitPageProps {}
 
 const DebitPage = (props: IDebitPageProps) => {
+  const auth = useAppSelector((state) => state.auth);
   const { data: debits, isFetching } = useGetDebitQuery();
   const { data: banks } = useGetBankQuery();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -51,6 +55,10 @@ const DebitPage = (props: IDebitPageProps) => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const [type, setType] = useState<string | boolean>("all");
+
+  const form = useForm<{ type: "all" | "me" | "other" }>({
+    defaultValues: { type: "all" },
+  });
 
   const columns: GridColDef<IDebit>[] = [
     {
@@ -178,6 +186,8 @@ const DebitPage = (props: IDebitPageProps) => {
     },
   ];
 
+  const debitType = useWatch({ name: "type", control: form.control });
+
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
   };
@@ -243,11 +253,11 @@ const DebitPage = (props: IDebitPageProps) => {
         </Link>
       }
     >
-      <Box
+      <Stack
+        direction="row"
+        alignItems="center"
+        spacing={3}
         sx={{
-          "& > *:not(:last-child)": {
-            marginRight: 2,
-          },
           mb: 3,
         }}
       >
@@ -260,7 +270,20 @@ const DebitPage = (props: IDebitPageProps) => {
             {item.label}
           </Button>
         ))}
-      </Box>
+        <FormProvider {...form}>
+          <form>
+            <FormSelect
+              name="type"
+              label="Type"
+              options={[
+                { label: "All", value: "all" },
+                { label: "Me", value: "me" },
+                { label: "Other", value: "other" },
+              ]}
+            />
+          </form>
+        </FormProvider>
+      </Stack>
       <Box sx={{ width: "100%", height: 600 }}>
         <DataGrid
           sx={{
@@ -269,9 +292,23 @@ const DebitPage = (props: IDebitPageProps) => {
               backgroundColor: "#eee",
             },
           }}
-          rows={(debits || []).filter((item) =>
-            type === "all" ? true : item.isPaid === type
-          )}
+          rows={(debits || []).filter((item) => {
+            if (type !== "all" && item.isPaid !== type) return false;
+            if (debitType !== "all") {
+              if (
+                debitType === "me" &&
+                auth.accountNumber === item.toAccountNumber
+              )
+                return false;
+              if (
+                debitType === "other" &&
+                auth.accountNumber === item.fromAccountNumber
+              )
+                return false;
+            }
+
+            return true;
+          })}
           columns={columns}
           pageSize={10}
           loading={isFetching}

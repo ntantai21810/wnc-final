@@ -3,7 +3,7 @@ import { IRecipient } from "./recipient";
 import { TRole } from "./role";
 
 export interface IAccount extends IBaseEntity {
-  accountNumber: number;
+  accountNumber: string;
   fullName: string;
   balance: number;
   email: string;

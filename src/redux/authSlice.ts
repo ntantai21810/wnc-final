@@ -12,7 +12,7 @@ export interface IAuthState extends IAccount {
 export const initialState: IAuthState = {
   id: 0,
   status: "authenticating",
-  accountNumber: 0,
+  accountNumber: "",
   fullName: "",
   balance: 0,
   email: "",

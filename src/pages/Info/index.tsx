@@ -12,7 +12,7 @@ export interface IInfoPageProps {}
 const InfoPage = (props: IInfoPageProps) => {
   const auth = useAppSelector((state) => state.auth);
 
-  const columns: GridColDef<{ accountNumber: number; balance: number }>[] = [
+  const columns: GridColDef<{ accountNumber: string; balance: number }>[] = [
     {
       field: "accountNumber",
       headerName: "Account Number",
