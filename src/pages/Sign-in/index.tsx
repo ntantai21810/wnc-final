@@ -42,7 +42,8 @@ export default function SigninPage(props: ISigninPageProps) {
       if (res.data.role !== "Admin")
         try {
           const resNoti = await axios.get(
-            "https://bankmaia.herokuapp.com/api/Account/me/notifications"
+            "https://bankmaia.herokuapp.com/api/Account/me/notifications",
+            { withCredentials: true }
           );
 
           notifications = resNoti.data;
