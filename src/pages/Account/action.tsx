@@ -37,10 +37,16 @@ const AccountActionPage = (props: IAccountActionPageProps) => {
 
   const _handleSubmit = async (values: IAccountFormData) => {
     try {
-      await addAccount({ ...values, balance: +values.balance }).unwrap();
+      const res = await addAccount({
+        ...values,
+        balance: +values.balance,
+      }).unwrap();
 
       dispatch(
-        openNotification({ type: "success", message: "Add successfully." })
+        openNotification({
+          type: "success",
+          message: `Password: ${(res as any).password}`,
+        })
       );
 
       navigate("/account");

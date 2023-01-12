@@ -43,6 +43,17 @@ export const appApi = createApi({
       }),
       invalidatesTags: ["Account"],
     }),
+    setUserActiveStatus: builder.mutation<
+      IAccount,
+      { bankAccountId: number; isActive: boolean }
+    >({
+      query: (data) => ({
+        url: "/Employee/set-user-active-status",
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["Account"],
+    }),
     getAccountByEmployee: builder.query<IAccount[], void>({
       query: () => `/Employee/user`,
       providesTags: ["Account"],
@@ -200,4 +211,5 @@ export const {
   useAddStaffMutation,
   useEditStaffMutation,
   useDeleteStaffMutation,
+  useSetUserActiveStatusMutation,
 } = appApi;

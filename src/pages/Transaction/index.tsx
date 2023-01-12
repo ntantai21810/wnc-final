@@ -1,7 +1,7 @@
 //layouts
 import AdminLayout from "../../layouts/admin-layout";
 //types
-import { Box, Button, Typography } from "@mui/material";
+import { Box, Button, Stack, Typography } from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import ContentLayout from "../../layouts/content-layout";
 //others
@@ -149,6 +149,14 @@ const TransactionPage = (props: ITransactionPageProps) => {
                   backgroundColor: "#eee",
                 },
               },
+              "& .row-cross-transaction": {
+                bgcolor: "#ffb5da",
+                cursor: "pointer",
+
+                "&:hover": {
+                  backgroundColor: "#eee",
+                },
+              },
               "& .row-debit": {
                 bgcolor: "#ffc8c8",
                 cursor: "pointer",
@@ -175,8 +183,58 @@ const TransactionPage = (props: ITransactionPageProps) => {
             disableSelectionOnClick
             loading={isFetching}
             experimentalFeatures={{ newEditingApi: true }}
-            getRowClassName={(params) => `row-${params.row.type.toLowerCase()}`}
+            getRowClassName={(params) => {
+              if (params.row.bankDestinationId || params.row.bankSourceId)
+                return `row-cross-transaction`;
+
+              return `row-${params.row.type.toLowerCase()}`;
+            }}
           />
+        </Box>
+        <Box
+          mt={3}
+          sx={{
+            "& > *": {
+              marginBottom: 2,
+            },
+          }}
+        >
+          <Stack direction="row" alignItems="center" spacing={3}>
+            <Box
+              width="20px"
+              height="20px"
+              sx={{ backgroundColor: "#d6d6ff" }}
+            ></Box>
+
+            <Typography>Same bank transaction</Typography>
+          </Stack>
+          <Stack direction="row" alignItems="center" spacing={3}>
+            <Box
+              width="20px"
+              height="20px"
+              sx={{ backgroundColor: "#ffb5da" }}
+            ></Box>
+
+            <Typography>Cross bank transaction</Typography>
+          </Stack>
+          <Stack direction="row" alignItems="center" spacing={3}>
+            <Box
+              width="20px"
+              height="20px"
+              sx={{ backgroundColor: "#ffc8c8" }}
+            ></Box>
+
+            <Typography>Debit</Typography>
+          </Stack>
+          <Stack direction="row" alignItems="center" spacing={3}>
+            <Box
+              width="20px"
+              height="20px"
+              sx={{ backgroundColor: "#b4f6b4" }}
+            ></Box>
+
+            <Typography>Receive</Typography>
+          </Stack>
         </Box>
       </Box>
     </ContentLayout>

@@ -47,10 +47,15 @@ const StaffActionPage = (props: IStaffActionPageProps) => {
   const _handleSubmit = async (values: IStaffFormData) => {
     try {
       if (id === "add") {
-        await addStaff(values).unwrap();
+        const res = await addStaff(values).unwrap();
+
+        console.log({ res });
 
         dispatch(
-          openNotification({ type: "success", message: "Add successfully." })
+          openNotification({
+            type: "success",
+            message: `Password: ${(res as any).password}`,
+          })
         );
       } else {
         await editStaff({

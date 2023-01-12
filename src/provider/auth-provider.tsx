@@ -1,7 +1,6 @@
 import axios from "axios";
 import * as React from "react";
 import { matchRoutes, useLocation, useNavigate } from "react-router-dom";
-import { axiosClient } from "../configs/axios";
 import { RBAC } from "../constants/role";
 import { useAppDispatch, useAppSelector } from "../hooks/redux";
 import { INotification } from "../model/notification";
@@ -24,8 +23,6 @@ export default function AuthProvider({ children }: IAuthProviderProps) {
     (item) => item.url === pathName
   );
 
-  console.log({ pathName });
-
   React.useEffect(() => {
     const _getMe = async () => {
       try {
@@ -37,7 +34,7 @@ export default function AuthProvider({ children }: IAuthProviderProps) {
 
         if (res.data.role !== "Admin")
           try {
-            const resNoti = await axiosClient.get("/Account/me/notifications");
+            const resNoti = await axios.get("/Account/me/notifications");
 
             notifications = resNoti.data;
           } catch (e) {

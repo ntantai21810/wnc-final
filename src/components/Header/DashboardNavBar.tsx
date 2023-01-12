@@ -114,31 +114,37 @@ export const DashboardNavbar = (props: IDashboardNavBarProps) => {
               }}
               maxHeight="400px"
             >
-              {notifications.map((item) => (
-                <Box
-                  p={2}
-                  sx={{
-                    cursor: "pointer",
-                    transition: "all linear 0.25s",
-                    "&:hover": {
-                      backgroundColor: "#eee",
-                    },
-                  }}
-                  onClick={() => {
-                    setAnchorElUser(null);
-                    if (item.type === "Transaction") navigate("/transaction");
-                    if (item.type === "Debit") navigate("/debit");
-                    if (item.type === "Charge") navigate("/transaction");
-                  }}
-                >
-                  <Typography fontWeight="bold" sx={{ marginBottom: 1 }}>
-                    {item.description}
-                  </Typography>
-                  <Typography>
-                    {dayjs(item.time).format("DD/MM/YYYY")}
-                  </Typography>
-                </Box>
-              ))}
+              {notifications.length > 0 ? (
+                notifications.map((item) => (
+                  <Box
+                    p={2}
+                    sx={{
+                      cursor: "pointer",
+                      transition: "all linear 0.25s",
+                      "&:hover": {
+                        backgroundColor: "#eee",
+                      },
+                    }}
+                    onClick={() => {
+                      setAnchorElUser(null);
+                      if (item.type === "Transaction") navigate("/transaction");
+                      if (item.type === "Debit") navigate("/debit");
+                      if (item.type === "Charge") navigate("/transaction");
+                    }}
+                  >
+                    <Typography fontWeight="bold" sx={{ marginBottom: 1 }}>
+                      {item.description}
+                    </Typography>
+                    <Typography>
+                      {dayjs(item.time).format("DD/MM/YYYY")}
+                    </Typography>
+                  </Box>
+                ))
+              ) : (
+                <Typography textAlign="center" px={5} py={3}>
+                  Empty
+                </Typography>
+              )}
             </Box>
           </Menu>
         </Box>

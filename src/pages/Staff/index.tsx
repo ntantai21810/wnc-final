@@ -31,6 +31,11 @@ const StaffPage = (props: IStaffPageProps) => {
       width: 100,
     },
     {
+      field: "username",
+      headerName: "Username",
+      width: 200,
+    },
+    {
       field: "firstName",
       headerName: "First Name",
       width: 200,

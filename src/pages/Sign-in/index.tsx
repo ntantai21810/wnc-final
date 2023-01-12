@@ -2,6 +2,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { LoadingButton } from "@mui/lab";
 import { Avatar, Box, Grid, Paper, Stack, Typography } from "@mui/material";
+import axios from "axios";
 import { useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
@@ -40,7 +41,7 @@ export default function SigninPage(props: ISigninPageProps) {
 
       if (res.data.role !== "Admin")
         try {
-          const resNoti = await axiosClient.get("/Account/me/notifications");
+          const resNoti = await axios.get("/Account/me/notifications");
 
           notifications = resNoti.data;
         } catch (e) {

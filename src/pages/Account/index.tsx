@@ -1,7 +1,7 @@
 //layouts
 import AdminLayout from "../../layouts/admin-layout";
 //types
-import { Box, Button, IconButton, Menu, MenuItem } from "@mui/material";
+import { Box, Button, IconButton, Menu, MenuItem, Switch } from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import ContentLayout from "../../layouts/content-layout";
 //others
@@ -12,17 +12,23 @@ import ChargeMoneyForm from "../../components/pages/Account/ChargeMoneyForm";
 import { useAppDispatch } from "../../hooks/redux";
 import { useDialog } from "../../hooks/useDialog";
 import { IAccount } from "../../model/account";
-import { useGetAccountByEmployeeQuery } from "../../redux/apiSlice";
+import {
+  useGetAccountByEmployeeQuery,
+  useSetUserActiveStatusMutation,
+} from "../../redux/apiSlice";
 import { openNotification } from "../../redux/notificationSlice";
 
 export interface IAccountPageProps {}
 
 const AccountPage = (props: IAccountPageProps) => {
   const { data: users, isFetching } = useGetAccountByEmployeeQuery();
+  const [setUserActiveStatus] = useSetUserActiveStatusMutation();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const navigate = useNavigate();
   const dialog = useDialog();
   const dispatch = useAppDispatch();
+
+  console.log({ users });
 
   const columns: GridColDef<IAccount>[] = [
     {
@@ -34,6 +40,26 @@ const AccountPage = (props: IAccountPageProps) => {
       field: "accountNumber",
       headerName: "Account Number",
       width: 200,
+    },
+    {
+      field: "isActive",
+      headerName: "Active",
+      width: 200,
+      renderCell: (params) => (
+        <Switch
+          defaultChecked={params.row.isActive}
+          onChange={async (e, value) => {
+            try {
+              await setUserActiveStatus({
+                bankAccountId: params.row.bankAccountId,
+                isActive: value,
+              }).unwrap();
+            } catch (e) {
+              console.log(e);
+            }
+          }}
+        />
+      ),
     },
     {
       field: "balance",

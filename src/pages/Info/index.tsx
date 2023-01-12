@@ -1,7 +1,7 @@
 //layouts
 import AdminLayout from "../../layouts/admin-layout";
 //types
-import { Box, Grid, Typography } from "@mui/material";
+import { Box, Grid, Switch, Typography } from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import ContentLayout from "../../layouts/content-layout";
 //others
@@ -12,7 +12,11 @@ export interface IInfoPageProps {}
 const InfoPage = (props: IInfoPageProps) => {
   const auth = useAppSelector((state) => state.auth);
 
-  const columns: GridColDef<{ accountNumber: string; balance: number }>[] = [
+  const columns: GridColDef<{
+    accountNumber: string;
+    balance: number;
+    isActive: boolean;
+  }>[] = [
     {
       field: "accountNumber",
       headerName: "Account Number",
@@ -22,6 +26,17 @@ const InfoPage = (props: IInfoPageProps) => {
       field: "balance",
       headerName: "Balance",
       width: 200,
+    },
+    {
+      field: "isActive",
+      headerName: "Active",
+      width: 200,
+      renderCell: (params) => (
+        <Switch
+          defaultChecked={params.row.isActive}
+          onChange={(e, value) => {}}
+        />
+      ),
     },
   ];
 
@@ -54,7 +69,11 @@ const InfoPage = (props: IInfoPageProps) => {
               },
             }}
             rows={[
-              { accountNumber: auth.accountNumber, balance: auth.balance },
+              {
+                accountNumber: auth.accountNumber,
+                balance: auth.balance,
+                isActive: auth.isActive,
+              },
             ]}
             columns={columns}
             getRowId={(params) => params.accountNumber}
