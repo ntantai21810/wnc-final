@@ -3,7 +3,7 @@ import { z } from "zod";
 export interface ITransactionFormData {
   toAccountNumber: string;
   amount: number | "";
-  bankId: number | "";
+  bankId: number | "" | null;
   chargeReceiver: boolean | number;
   description: string;
   otp: string;

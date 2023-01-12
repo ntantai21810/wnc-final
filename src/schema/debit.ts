@@ -7,9 +7,10 @@ export interface IDebitFormData {
   amount: number | "";
   description: string;
   dateDue: string | Dayjs | null;
-  bankDestinationId: number | "";
+  bankDestinationId: number | "" | null;
 
   //Handle on client
+  isSameBank: boolean;
 }
 
 export const debitSchema = z.object({
@@ -27,6 +28,9 @@ export const debitSchema = z.object({
   bankDestinationId: z
     .number()
     .or(z.string().min(1, "This field is required.")),
+
+  //Handle on client
+  isSameBank: z.boolean(),
 });
 
 export interface IDeleteDebitFormData {

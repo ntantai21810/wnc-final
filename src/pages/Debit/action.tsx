@@ -1,13 +1,13 @@
 //layouts
 import AdminLayout from "../../layouts/admin-layout";
 //types
-import { Container } from "@mui/material";
+import { Box, Container } from "@mui/material";
 import ContentLayout from "../../layouts/content-layout";
 //others
 import { zodResolver } from "@hookform/resolvers/zod";
 import { LoadingButton } from "@mui/lab";
 import { Dayjs } from "dayjs";
-import { FormProvider, useForm } from "react-hook-form";
+import { FormProvider, useForm, useWatch } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import FormDateTimePicker from "../../components/DatePicker/FormDateTimePicker";
 import FormInput from "../../components/Input/FormInput";
@@ -34,14 +34,22 @@ const DebitActionPage = (props: IDebitActionPageProps) => {
       description: "",
       dateDue: null,
       bankDestinationId: "",
+
+      //Handle on FE
+      isSameBank: true,
     },
     resolver: zodResolver(debitSchema),
   });
+
+  const isSameBank = useWatch({ name: "isSameBank", control: form.control });
 
   const _handleSubmit = async (values: IDebitFormData) => {
     try {
       await addDebit({
         ...values,
+        bankDestinationId: values.bankDestinationId
+          ? values.bankDestinationId
+          : null,
         dateDue: (values.dateDue as Dayjs).toISOString(),
       }).unwrap();
 
@@ -66,14 +74,24 @@ const DebitActionPage = (props: IDebitActionPageProps) => {
             id="recipient-form"
             onSubmit={form.handleSubmit(_handleSubmit)}
           >
-            <FormSelect
-              name="bankDestinationId"
-              label="Bank"
-              options={
-                banks?.map((item) => ({ label: item.name, value: item.id })) ||
-                []
-              }
-            />
+            <FormSwitch name="isSameBank" label="Same bank" />
+            <Box
+              sx={{
+                display: isSameBank ? "none" : "block",
+                "& > *": { width: "100%" },
+              }}
+            >
+              <FormSelect
+                name="bankDestinationId"
+                label="Bank"
+                options={
+                  banks?.map((item) => ({
+                    label: item.name,
+                    value: item.id,
+                  })) || []
+                }
+              />
+            </Box>
             <FormInput name="accountNumber" label="Account Number" />
             <FormInput name="amount" label="Amount" />
             <FormInput name="description" label="Description" />

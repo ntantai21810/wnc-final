@@ -96,7 +96,7 @@ const TransactionActionPage = (props: ITransactionActionPageProps) => {
           : values.toAccountNumber + "",
         bankId: values.selectFromList
           ? recipients?.find((item) => item.id === values.recipientId)
-              ?.bankDestinationId || 0
+              ?.bankDestinationId || null
           : values.bankId,
         chargeReceiver: 0 === values.chargeReceiver,
         amount: values.amount,
@@ -113,16 +113,7 @@ const TransactionActionPage = (props: ITransactionActionPageProps) => {
 
       dispatch(updateAuth({ balance: auth.balance - +values.amount }));
 
-      if (
-        !recipients?.find((item) => {
-          if (values.bankId) {
-            return (
-              values.bankId === item.bankDestinationId &&
-              values.toAccountNumber === item.accountNumber
-            );
-          } else return values.toAccountNumber === item.accountNumber;
-        })
-      )
+      if (!recipients?.find((item) => item.id === values.recipientId))
         dialog.createDialog({
           type: "save_recipient",
           onAction: async () => {
@@ -156,6 +147,7 @@ const TransactionActionPage = (props: ITransactionActionPageProps) => {
             navigate("/transaction");
           },
         });
+      else navigate("/transaction");
     } catch (e) {
       console.log(e);
     }
