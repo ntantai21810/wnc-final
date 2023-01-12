@@ -126,8 +126,8 @@ const TransactionActionPage = (props: ITransactionActionPageProps) => {
                 suggestedName: null,
                 bankDestinationId: values.selectFromList
                   ? recipients?.find((item) => item.id === values.recipientId)
-                      ?.bankDestinationId || 0
-                  : values.bankId,
+                      ?.bankDestinationId || null
+                  : values.bankId || null,
               }).unwrap();
 
               dispatch(
