@@ -97,7 +97,7 @@ const TransactionActionPage = (props: ITransactionActionPageProps) => {
         bankId: values.selectFromList
           ? recipients?.find((item) => item.id === values.recipientId)
               ?.bankDestinationId || null
-          : values.bankId,
+          : values.bankId || null,
         chargeReceiver: 0 === values.chargeReceiver,
         amount: values.amount,
         otp: values.otp,
