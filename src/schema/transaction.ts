@@ -42,8 +42,4 @@ export const transactionSchema = z
     (data) =>
       data.selectFromList || (!data.selectFromList && data.toAccountNumber),
     { message: "This field is required.", path: ["toAccountNumber"] }
-  )
-  .refine(
-    (data) => data.selectFromList || (!data.selectFromList && data.bankId),
-    { message: "This field is required.", path: ["bankId"] }
   );
