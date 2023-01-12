@@ -6,15 +6,14 @@ import { openNotification } from "./notificationSlice";
 export const rtkQueryErrorLogger: Middleware =
   (api: MiddlewareAPI) => (next) => (action) => {
     if (isRejectedWithValue(action)) {
-      store.dispatch(
-        openNotification({
-          type: "error",
-          message: action.payload?.data?.Message || "Unexpected error.",
-        })
-      );
-
-      if (action.payload?.status === 401) {
-      }
+      // store.dispatch(
+      //   openNotification({
+      //     type: "error",
+      //     message: action.payload?.data?.Message || "Unexpected error.",
+      //   })
+      // );
+      // if (action.payload?.status === 401) {
+      // }
     }
 
     return next(action);

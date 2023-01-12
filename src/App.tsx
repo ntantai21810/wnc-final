@@ -11,10 +11,8 @@ import routes from "./routes";
 
 function App() {
   const dispatch = useAppDispatch();
-  const { refetch: refetchTransaction } = useGetTransactionQuery(undefined, {
-    skip: true,
-  });
-  const { refetch: refetchDebit } = useGetDebitQuery(undefined, { skip: true });
+  const { refetch: refetchTransaction } = useGetTransactionQuery();
+  const { refetch: refetchDebit } = useGetDebitQuery();
 
   const router = createBrowserRouter(
     routes.map((item) => ({
