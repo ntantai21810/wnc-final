@@ -25,9 +25,7 @@ export const debitSchema = z.object({
     .refine((data) => !data || /^[0-9]*$/.test(data), "Number expected."),
   description: z.string().min(1, "This field is required."),
   dateDue: z.any().refine(Boolean, "This field is required."),
-  bankDestinationId: z
-    .number()
-    .or(z.string().min(1, "This field is required.")),
+  bankDestinationId: z.number().or(z.string()),
 
   //Handle on client
   isSameBank: z.boolean(),
