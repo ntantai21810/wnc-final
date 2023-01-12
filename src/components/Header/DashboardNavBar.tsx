@@ -114,8 +114,8 @@ export const DashboardNavbar = (props: IDashboardNavBarProps) => {
               }}
               maxHeight="400px"
             >
-              {notifications.length > 0 ? (
-                notifications.map((item) => (
+              {notifications && notifications.length > 0 ? (
+                notifications?.map((item) => (
                   <Box
                     p={2}
                     sx={{
