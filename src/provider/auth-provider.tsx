@@ -72,7 +72,7 @@ export default function AuthProvider({ children }: IAuthProviderProps) {
   });
 
   React.useEffect(() => {
-    if (authState.id) {
+    if (authState.bankAccountId) {
       const hubConnectionBuilder = new HubConnectionBuilder()
         .withUrl("https://bankmaia.herokuapp.com/notification")
         .configureLogging(LogLevel.Information)
@@ -100,7 +100,7 @@ export default function AuthProvider({ children }: IAuthProviderProps) {
         hubConnectionBuilder.stop();
       };
     }
-  }, [authState.id, dispatch, refetchDebit, refetchTransaction]);
+  }, [authState.bankAccountId, dispatch, refetchDebit, refetchTransaction]);
 
   if (isValidAccess) return <>{children}</>;
   else return <div>Forbidden</div>;
