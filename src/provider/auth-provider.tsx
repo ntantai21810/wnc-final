@@ -1,3 +1,4 @@
+import { HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
 import axios from "axios";
 import * as React from "react";
 import { matchRoutes, useLocation, useNavigate } from "react-router-dom";
@@ -5,7 +6,9 @@ import { RBAC } from "../constants/role";
 import { useAppDispatch, useAppSelector } from "../hooks/redux";
 import { INotification } from "../model/notification";
 import { TRole } from "../model/role";
-import { logout, setAuth } from "../redux/authSlice";
+import { useGetDebitQuery, useGetTransactionQuery } from "../redux/apiSlice";
+import { addNotification, logout, setAuth } from "../redux/authSlice";
+import { openNotification } from "../redux/notificationSlice";
 import routes from "../routes/index";
 
 interface IAuthProviderProps {
@@ -13,6 +16,8 @@ interface IAuthProviderProps {
 }
 
 export default function AuthProvider({ children }: IAuthProviderProps) {
+  const { refetch: refetchTransaction } = useGetTransactionQuery();
+  const { refetch: refetchDebit } = useGetDebitQuery();
   const authState = useAppSelector((state) => state.auth);
   const navigate = useNavigate();
   const location = useLocation();
@@ -65,6 +70,37 @@ export default function AuthProvider({ children }: IAuthProviderProps) {
       navigate("/login");
     }
   });
+
+  React.useEffect(() => {
+    if (authState.id) {
+      const hubConnectionBuilder = new HubConnectionBuilder()
+        .withUrl("https://bankmaia.herokuapp.com/notification")
+        .configureLogging(LogLevel.Information)
+        .build();
+
+      hubConnectionBuilder
+        .start()
+        .then(() => console.log("Connect ws ok"))
+        .catch((err) => console.log(err));
+
+      hubConnectionBuilder.on(
+        "SendNotificationToUser",
+        (result: INotification) => {
+          console.log(result);
+          dispatch(openNotification({ message: result.description }));
+          dispatch(addNotification(result));
+
+          if (result.type === "Transaction" || result.type === "Charge")
+            refetchTransaction();
+          if (result.type === "Debit") refetchDebit();
+        }
+      );
+
+      return () => {
+        hubConnectionBuilder.stop();
+      };
+    }
+  }, [authState.id, dispatch, refetchDebit, refetchTransaction]);
 
   if (isValidAccess) return <>{children}</>;
   else return <div>Forbidden</div>;
