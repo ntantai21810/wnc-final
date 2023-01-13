@@ -6,15 +6,12 @@ import { CssBaseline, GlobalStyles } from "@mui/material";
 import { ThemeProvider } from "@mui/material/styles";
 import React from "react";
 import ReactDOM from "react-dom/client";
-import {
-  GoogleReCaptcha,
-  GoogleReCaptchaProvider,
-} from "react-google-recaptcha-v3";
 import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
 import App from "./App";
 import Notification from "./components/Notification";
 import theme from "./configs/theme";
+import DialogProvider from "./provider/dialog-provider";
 import { persistor, store } from "./redux/store";
 import reportWebVitals from "./reportWebVitals";
 
@@ -23,23 +20,22 @@ const root = ReactDOM.createRoot(
 );
 root.render(
   <React.StrictMode>
-    <GoogleReCaptchaProvider reCaptchaKey="6LdZEXkjAAAAAA-KhLTsOUZKOKRtqr5fpw7c6jrW">
-      <GoogleReCaptcha onVerify={(token) => console.log({ token })} />
-      <Provider store={store}>
-        <PersistGate loading={null} persistor={persistor}>
-          <ThemeProvider theme={theme}>
-            <GlobalStyles
-              styles={{ a: { color: "unset", textDecoration: "none" } }}
-            />
-            <CssBaseline />
+    <Provider store={store}>
+      <PersistGate loading={null} persistor={persistor}>
+        <ThemeProvider theme={theme}>
+          <GlobalStyles
+            styles={{ a: { color: "unset", textDecoration: "none" } }}
+          />
+          <CssBaseline />
 
+          <DialogProvider>
             <App />
+          </DialogProvider>
 
-            <Notification />
-          </ThemeProvider>
-        </PersistGate>
-      </Provider>
-    </GoogleReCaptchaProvider>
+          <Notification />
+        </ThemeProvider>
+      </PersistGate>
+    </Provider>
   </React.StrictMode>
 );
 

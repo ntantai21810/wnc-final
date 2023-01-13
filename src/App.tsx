@@ -1,10 +1,9 @@
 import { HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
 import { useEffect } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import { useAppDispatch } from "./hooks/redux";
+import { useAppDispatch, useAppSelector } from "./hooks/redux";
 import { INotification } from "./model/notification";
 import AuthProvider from "./provider/auth-provider";
-import DialogProvider from "./provider/dialog-provider";
 import { useGetDebitQuery, useGetTransactionQuery } from "./redux/apiSlice";
 import { addNotification } from "./redux/authSlice";
 import { openNotification } from "./redux/notificationSlice";
@@ -14,6 +13,8 @@ function App() {
   const dispatch = useAppDispatch();
   const { refetch: refetchTransaction } = useGetTransactionQuery();
   const { refetch: refetchDebit } = useGetDebitQuery();
+
+  const auth = useAppSelector((state) => state.auth);
 
   const router = createBrowserRouter(
     routes.map((item) => ({
@@ -28,35 +29,37 @@ function App() {
   );
 
   useEffect(() => {
-    const hubConnectionBuilder = new HubConnectionBuilder()
-      .withUrl("https://bankmaia.herokuapp.com/notification")
-      .configureLogging(LogLevel.Information)
-      .build();
+    if (auth.id) {
+      const hubConnectionBuilder = new HubConnectionBuilder()
+        .withUrl("https://bankmaia.herokuapp.com/notification")
+        .configureLogging(LogLevel.Information)
+        .build();
 
-    hubConnectionBuilder
-      .start()
-      .then(() => console.log("Connect ws ok"))
-      .catch((err) => console.log(err));
+      hubConnectionBuilder
+        .start()
+        .then(() => console.log("Connect ws ok"))
+        .catch((err) => console.log(err));
 
-    hubConnectionBuilder.on(
-      "SendNotificationToUser",
-      (result: INotification) => {
-        console.log(result);
-        dispatch(openNotification({ message: result.description }));
-        dispatch(addNotification(result));
+      hubConnectionBuilder.on(
+        "SendNotificationToUser",
+        (result: INotification) => {
+          console.log(result);
+          dispatch(openNotification({ message: result.description }));
+          dispatch(addNotification(result));
 
-        if (result.type === "Transaction" || result.type === "Charge")
-          refetchTransaction();
-        if (result.type === "Debit") refetchDebit();
-      }
-    );
-  }, [dispatch, refetchDebit, refetchTransaction]);
+          if (result.type === "Transaction" || result.type === "Charge")
+            refetchTransaction();
+          if (result.type === "Debit") refetchDebit();
+        }
+      );
 
-  return (
-    <DialogProvider>
-      <RouterProvider router={router} />
-    </DialogProvider>
-  );
+      return () => {
+        hubConnectionBuilder.stop();
+      };
+    }
+  }, [dispatch, refetchDebit, refetchTransaction, auth.id]);
+
+  return <RouterProvider router={router} />;
 }
 
 export default App;
