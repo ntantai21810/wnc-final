@@ -68,7 +68,7 @@ const Transition = React.forwardRef(function Transition(
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-export default function DialogContainer(props: IDialogContainerProps) {
+function DialogContainer(props: IDialogContainerProps) {
   const {
     open,
     type = "delete",
@@ -144,3 +144,5 @@ export default function DialogContainer(props: IDialogContainerProps) {
     </Dialog>
   );
 }
+
+export default DialogContainer;

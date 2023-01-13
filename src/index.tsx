@@ -15,7 +15,6 @@ import { PersistGate } from "redux-persist/integration/react";
 import App from "./App";
 import Notification from "./components/Notification";
 import theme from "./configs/theme";
-import DialogProvider from "./provider/dialog-provider";
 import { persistor, store } from "./redux/store";
 import reportWebVitals from "./reportWebVitals";
 
@@ -34,9 +33,7 @@ root.render(
             />
             <CssBaseline />
 
-            <DialogProvider>
-              <App />
-            </DialogProvider>
+            <App />
 
             <Notification />
           </ThemeProvider>

@@ -37,7 +37,6 @@ const TransactionPage = (props: ITransactionPageProps) => {
   const { data: bankData } = useGetBankQuery();
   const navigate = useNavigate();
   const [type, setType] = useState("all");
-
   const columns: GridColDef<ITransaction>[] = [
     {
       field: "time",

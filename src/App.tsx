@@ -4,6 +4,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { useAppDispatch } from "./hooks/redux";
 import { INotification } from "./model/notification";
 import AuthProvider from "./provider/auth-provider";
+import DialogProvider from "./provider/dialog-provider";
 import { useGetDebitQuery, useGetTransactionQuery } from "./redux/apiSlice";
 import { addNotification } from "./redux/authSlice";
 import { openNotification } from "./redux/notificationSlice";
@@ -17,6 +18,7 @@ function App() {
   const router = createBrowserRouter(
     routes.map((item) => ({
       path: item.path,
+      index: true,
       element: (
         <AuthProvider>
           {item.layout ? item.layout(item.element) : item.element}
@@ -50,7 +52,11 @@ function App() {
     );
   }, [dispatch, refetchDebit, refetchTransaction]);
 
-  return <RouterProvider router={router} />;
+  return (
+    <DialogProvider>
+      <RouterProvider router={router} />
+    </DialogProvider>
+  );
 }
 
 export default App;

@@ -1,7 +1,5 @@
+import type { Middleware, MiddlewareAPI } from "@reduxjs/toolkit";
 import { isRejectedWithValue } from "@reduxjs/toolkit";
-import type { MiddlewareAPI, Middleware } from "@reduxjs/toolkit";
-import { store } from "./store";
-import { openNotification } from "./notificationSlice";
 
 export const rtkQueryErrorLogger: Middleware =
   (api: MiddlewareAPI) => (next) => (action) => {

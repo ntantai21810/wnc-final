@@ -14,7 +14,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { LoadingButton } from "@mui/lab";
 import { useEffect, useState } from "react";
 import { FormProvider, useForm, useWatch } from "react-hook-form";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router";
+import { Navigate } from "react-router-dom";
 import FormInput from "../../components/Input/FormInput";
 import FormRadioGroup from "../../components/Radio/FormRadioGroup";
 import FormSelect from "../../components/Select/FormSelect";
@@ -29,34 +30,40 @@ import {
   useGetBankQuery,
   useGetRecipientQuery,
 } from "../../redux/apiSlice";
+import { updateAuth } from "../../redux/authSlice";
 import { openNotification } from "../../redux/notificationSlice";
 import {
   ITransactionFormData,
   transactionSchema,
 } from "../../schema/transaction";
-import { updateAuth } from "../../redux/authSlice";
 
 export interface ITransactionActionPageProps {}
 
 const TransactionActionPage = (props: ITransactionActionPageProps) => {
-  const { data: recipients } = useGetRecipientQuery();
-  const { data: bankData } = useGetBankQuery();
-  const [step, setStep] = useState(0);
-  const dialog = useDialog();
-  const auth = useAppSelector((state) => state.auth);
-  const [addTransaction, { isLoading: isAdding }] = useAddTransactionMutation();
-  const [addRecipient] = useAddRecipientMutation();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const dialog = useDialog();
+  const params = useParams();
+
+  const { data: recipients } = useGetRecipientQuery();
+  const { data: bankData } = useGetBankQuery();
+  const auth = useAppSelector((state) => state.auth);
+
+  const [addTransaction, { isLoading: isAdding }] = useAddTransactionMutation();
+  const [addRecipient] = useAddRecipientMutation();
+
+  const [isRedirect, setIsRedirect] = useState(false);
+  const [step, setStep] = useState(0);
   const [isSendingOTP, setIsSendingOTP] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
-  const params = useParams();
-  const id = params.id;
   const [searchResult, setSearchResult] = useState<{
     bankAccountId: number;
     accountNumber: string;
     fullName: string;
   }>();
+
+  const id = params.id;
+
   const form = useForm<ITransactionFormData>({
     defaultValues: {
       toAccountNumber: "",
@@ -87,6 +94,12 @@ const TransactionActionPage = (props: ITransactionActionPageProps) => {
     control: form.control,
   });
 
+  const onClose = () => {
+    // navigate("/transaction");
+    setIsRedirect(true);
+    dialog.closeDialog();
+  };
+
   const _handleSubmit = async (values: ITransactionFormData) => {
     try {
       await addTransaction({
@@ -116,7 +129,7 @@ const TransactionActionPage = (props: ITransactionActionPageProps) => {
       if (!recipients?.find((item) => item.id === values.recipientId))
         dialog.createDialog({
           type: "save_recipient",
-          onAction: async () => {
+          onAction: async function () {
             try {
               await addRecipient({
                 accountNumber: values.selectFromList
@@ -136,18 +149,18 @@ const TransactionActionPage = (props: ITransactionActionPageProps) => {
                   message: "Save recipient successfully.",
                 })
               );
+              onClose();
             } catch (e) {
               console.log(e);
-            } finally {
-              dialog.closeDialog();
-              navigate("/transaction");
             }
           },
-          onCancel: () => {
-            navigate("/transaction");
+          onCancel: function () {
+            onClose();
           },
         });
-      else navigate("/transaction");
+      else {
+        navigate("/transaction");
+      }
     } catch (e) {
       console.log(e);
     }
@@ -196,6 +209,8 @@ const TransactionActionPage = (props: ITransactionActionPageProps) => {
 
   return (
     <ContentLayout title={"Transaction"} isBack>
+      {isRedirect && <Navigate to="/transaction" replace={true} />}
+
       <Container sx={{ mt: 3 }}>
         <FormProvider {...form}>
           <FormLayout
