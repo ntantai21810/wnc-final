@@ -13,12 +13,13 @@ services:
       - 443:443
     depends_on:
       - wnc-fe
-      # - certbot
-    # volumes:
-    #   - ./certbot/www:/var/www/certbot/:ro
-    #   - ./certbot/conf/:/etc/nginx/ssl/:ro
-  # certbot:
-  #   image: certbot/certbot:latest
-  #   volumes:
-  #     - ./certbot/www/:/var/www/certbot/:rw
-  #     - ./certbot/conf/:/etc/letsencrypt/:rw
+      - certbot
+    volumes:
+      - ./certbot/www:/var/www/certbot/:ro
+      - ./certbot/conf/:/etc/nginx/ssl/:ro
+  certbot:
+    image: certbot/certbot:latest
+    volumes:
+      - ./certbot/www/:/var/www/certbot/:rw
+      - ./certbot/conf/:/etc/letsencrypt/:rw
+    command: certonly --webroot --webroot-path /var/www/certbot/ -d www.nguyentai.click -d nguyentai.click --non-interactive --agree-tos -m nguyentantai9a3@gmail.com
