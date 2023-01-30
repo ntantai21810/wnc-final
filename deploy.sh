@@ -4,5 +4,5 @@ wget https://raw.githubusercontent.com/ntantai21810/wnc-final/master/docker-comp
 docker compose stop
 docker compose rm -f
 docker compose pull
-docker compose up -d
+docker compose run wnc-fe
 docker image prune -a -f
