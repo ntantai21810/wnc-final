@@ -4,4 +4,4 @@ wget https://raw.githubusercontent.com/ntantai21810/wnc-final/master/docker-comp
 docker compose stop
 docker compose rm -f
 docker compose pull
-docker compose run -d wnc-fe
+docker compose up -d wnc-fe
