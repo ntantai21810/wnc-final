@@ -5,7 +5,7 @@
 #   exit 1
 # fi
 
-domains=(nguyentai.click www.nguyentai.click)
+domains=(nguyentai.click)
 rsa_key_size=4096
 data_path="./certbot"
 email="nguyentantai9a3@gmail.com" # Adding a valid address is strongly recommended
