@@ -48,4 +48,4 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
           script: |
-            rm -rf deploy.sh && rm -rf init-nginx.sh && wget https://raw.githubusercontent.com/ntantai21810/wnc-final/master/deploy.sh && wget https://raw.githubusercontent.com/ntantai21810/wnc-final/master/init-nginx.sh && echo ${{ secrets.SU_PASSWORD }} | sudo -S rm -rf certbot | sudo -S bash deploy.sh init-nginx.sh
+            rm -rf deploy.sh && rm -rf init-nginx.sh && wget https://raw.githubusercontent.com/ntantai21810/wnc-final/master/deploy.sh && wget https://raw.githubusercontent.com/ntantai21810/wnc-final/master/init-nginx.sh && echo ${{ secrets.SU_PASSWORD }} | sudo -S rm -rf certbot && bash deploy.sh init-nginx.sh
