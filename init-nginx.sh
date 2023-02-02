@@ -28,14 +28,23 @@ if [ ! -e "$data_path/conf/options-ssl-nginx.conf" ] || [ ! -e "$data_path/conf/
 fi
 
 echo "### Creating dummy certificate for $domains ..."
+for domain in "${domains[@]}"; do
+  path="/etc/letsencrypt/live/$domain"
+  mkdir -p "$data_path/conf/live/$domain"
+  docker compose run --rm --entrypoint "\
+    openssl req -x509 -nodes -newkey rsa:$rsa_key_size -days 1\
+      -keyout '$path/privkey.pem' \
+      -out '$path/fullchain.pem' \
+      -subj '/CN=localhost'" certbot
+done
 path="/etc/letsencrypt/live/$domains"
-mkdir -p "$data_path/conf/live/$domains"
-docker compose run --rm --entrypoint "\
-  openssl req -x509 -nodes -newkey rsa:$rsa_key_size -days 1\
-    -keyout '$path/privkey.pem' \
-    -out '$path/fullchain.pem' \
-    -subj '/CN=localhost'" certbot
-echo
+# mkdir -p "$data_path/conf/live/$domains"
+# docker compose run --rm --entrypoint "\
+#   openssl req -x509 -nodes -newkey rsa:$rsa_key_size -days 1\
+#     -keyout '$path/privkey.pem' \
+#     -out '$path/fullchain.pem' \
+#     -subj '/CN=localhost'" certbot
+# echo
 
 
 echo "### Starting nginx ..."
